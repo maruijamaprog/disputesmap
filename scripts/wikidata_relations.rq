@@ -1,0 +1,14 @@
+# Дипломатические отношения (P530) между государствами в Wikidata (CC0).
+# Берутся все утверждения P530, кроме устаревших (deprecated), с датами начала/конца, если они есть.
+# Кроме государств с кодом ISO 3166-1 alpha-3 (P298), добавлены частично признанные государства без такого кода.
+SELECT ?x ?y ?start ?end WHERE {
+  { ?x wdt:P298 [] . }
+  UNION
+  { VALUES ?x { wd:Q1246 wd:Q23334 wd:Q23427 wd:Q907112 wd:Q23681 wd:Q34754 wd:Q40362 } }
+  ?x p:P530 ?st .
+  ?st ps:P530 ?y .
+  ?st wikibase:rank ?rank .
+  FILTER(?rank != wikibase:DeprecatedRank)
+  OPTIONAL { ?st pq:P580 ?start . }
+  OPTIONAL { ?st pq:P582 ?end . }
+}

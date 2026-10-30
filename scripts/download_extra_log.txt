@@ -1,0 +1,47 @@
+Download log 29.10.2026 17:19:30,72 
+Project folder: C:\Users\Marusya\projects\disputes-map 
+ 
+=== https://ucdp.uu.se/downloads/ucdpprio/ucdp-prio-acd-261-csv.zip 
+OK curl  
+ 
+=== https://correlatesofwar.org/wp-content/uploads/Inter-StateWarData_v4.0.csv 
+OK curl  
+ 
+=== https://correlatesofwar.org/wp-content/uploads/Extra-StateWarData_v4.0.csv 
+OK curl  
+ 
+=== https://correlatesofwar.org/wp-content/uploads/Intra-State-Wars-v5.1.zip 
+OK curl  
+ 
+=== https://correlatesofwar.org/wp-content/uploads/States2024.zip 
+curl: (22) The requested URL returned error: 499
+curl: (22) The requested URL returned error: 499
+Удаленный сервер возвратил ошибку: (499) Request has been forbidden by antivirus.
+FAILED 
+ 
+=== SPARQL scripts\wikidata_relations.rq 
+OK curl  
+ 
+=== SPARQL scripts\wikidata_states.rq 
+OK curl  
+ 
+ Том в устройстве C не имеет метки.
+ Серийный номер тома: 6E2E-B771
+
+ Содержимое папки C:\Users\Marusya\projects\disputes-map\raw
+
+29.10.2026  17:19    <DIR>          .
+08.10.2026  14:21    <DIR>          ..
+07.10.2026  22:14          26344671 CShapes-2.0.geojson
+29.10.2026  17:19             23068 Extra-StateWarData_v4.0.csv
+29.10.2026  17:19             31698 Inter-StateWarData_v4.0.csv
+29.10.2026  17:19            887487 Intra-State-Wars-v5.1.zip
+07.10.2026  22:15          13287234 ne_10m_admin_0_countries.geojson
+07.10.2026  22:14            701323 ne_10m_admin_0_disputed_areas.geojson
+07.10.2026  22:15          40726851 ne_10m_admin_1_states_provinces.geojson
+07.10.2026  22:15           3083490 ne_50m_admin_0_countries.geojson
+29.10.2026  17:19             45955 ucdp-prio-acd-261-csv.zip
+29.10.2026  17:19            559799 wikidata_relations.csv
+29.10.2026  17:19             26801 wikidata_states.csv
+              11 файлов       85718377 байт
+               2 папок     21735018496 байт свободно

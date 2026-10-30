@@ -1,0 +1,520 @@
+{
+ "_comment": "Откуда берётся полигон каждой зоны спора. ne:<BRK_A3> — Natural Earth 10m Admin-0 Breakaway & Disputed Areas; adm1:<ISO 3166-2> — Natural Earth 10m Admin-1; cshapes:<GW-код>@first|last|ГГГГММДД — единица CShapes 2.0; adm1unit:<geonunit> — все единицы Admin-1 с этим geonunit; ne0:<ISO>@долгота,широта — полигон страны NE 10m у точки; bbox:запад,юг,восток,север — прямоугольник для отсечения; операции {op: difference|intersection|union, a, b}. Если у спора нет зон, используется area_id «<id>--all».",
+ "areas": {
+  "crimea--all": {
+   "parts": [
+    "ne:B89"
+   ],
+   "source": "Natural Earth 10m disputed areas (B89 Crimea)",
+   "quality": "generalized"
+  },
+  "kashmir--indian": {
+   "parts": [
+    "ne:B05"
+   ],
+   "source": "Natural Earth 10m disputed areas (B05 Jammu and Kashmir)",
+   "quality": "generalized"
+  },
+  "kashmir--pakistani": {
+   "parts": [
+    "ne:B09",
+    "ne:B08"
+   ],
+   "source": "Natural Earth 10m disputed areas (B09 Azad Kashmir, B08 Gilgit-Baltistan)",
+   "quality": "generalized"
+  },
+  "kashmir--shaksgam": {
+   "parts": [
+    "ne:B06"
+   ],
+   "source": "Natural Earth 10m disputed areas (B06 Shaksam Valley)",
+   "quality": "generalized"
+  },
+  "kashmir--siachen": {
+   "parts": [
+    "ne:B45"
+   ],
+   "source": "Natural Earth 10m disputed areas (B45 Siachen Glacier)",
+   "quality": "generalized"
+  },
+  "south-china-sea--paracel": {
+   "parts": [
+    "ne:B47"
+   ],
+   "source": "Natural Earth 10m disputed areas (B47 Paracel Is.)",
+   "quality": "generalized"
+  },
+  "south-china-sea--spratly": {
+   "parts": [
+    "ne:B46"
+   ],
+   "source": "Natural Earth 10m disputed areas (B46 Spratly Is.)",
+   "quality": "generalized"
+  },
+  "south-china-sea--scarborough": {
+   "parts": [
+    "ne:B70"
+   ],
+   "source": "Natural Earth 10m disputed areas (B70 Scarborough Reef)",
+   "quality": "generalized"
+  },
+  "northern-cyprus--north": {
+   "parts": [
+    "ne:B20"
+   ],
+   "source": "Natural Earth 10m disputed areas (B20 N. Cyprus)",
+   "quality": "generalized"
+  },
+  "northern-cyprus--buffer": {
+   "parts": [
+    "ne:B43"
+   ],
+   "source": "Natural Earth 10m disputed areas (B43 Cyprus U.N. Buffer Zone)",
+   "quality": "generalized"
+  },
+  "western-sahara--west": {
+   "parts": [
+    "ne:B19"
+   ],
+   "source": "Natural Earth 10m disputed areas (B19, под управлением Марокко)",
+   "quality": "generalized",
+   "note": "Граница между зонами — линия песчаного вала (бермы) по Natural Earth"
+  },
+  "western-sahara--east": {
+   "parts": [
+    "ne:B28"
+   ],
+   "source": "Natural Earth 10m disputed areas (B28, под управлением ПОЛИСАРИО)",
+   "quality": "generalized",
+   "note": "Граница между зонами — линия песчаного вала (бермы) по Natural Earth"
+  },
+  "falklands-malvinas--falklands": {
+   "parts": [
+    "ne:B12"
+   ],
+   "source": "Natural Earth 10m disputed areas (B12 Falkland Is.)",
+   "quality": "generalized"
+  },
+  "falklands-malvinas--sgssi": {
+   "parts": [
+    "ne:B32",
+    "ne:B33"
+   ],
+   "source": "Natural Earth 10m disputed areas (B32 S. Georgia, B33 S. Sandwich Is.)",
+   "quality": "generalized"
+  },
+  "alsace-lorraine--all": {
+   "parts": [
+    "adm1:FR-67",
+    "adm1:FR-68",
+    "adm1:FR-57"
+   ],
+   "source": "Natural Earth 10m admin-1: департаменты Нижний Рейн, Верхний Рейн, Мозель",
+   "quality": "approximate",
+   "note": "Современные департаменты приблизительно соответствуют земле Эльзас-Лотарингия 1871–1918 гг.; точная граница 1871 г. не воспроизводится"
+  },
+  "danzig--all": {
+   "parts": [
+    "cshapes:291@last"
+   ],
+   "source": "CShapes 2.0, единица «Danzig» (GW 291)",
+   "quality": "generalized",
+   "note": "В CShapes 2.0 единица действует до 31.08.1938; даты статуса берутся из disputes.json"
+  },
+  "iraq-kuwait--all": {
+   "parts": [
+    "cshapes:690@last"
+   ],
+   "source": "CShapes 2.0, единица «Kuwait» (GW 690)",
+   "quality": "generalized",
+   "note": "Показана вся территория Кувейта; линия, демаркированная комиссией ООН в 1993 г., отдельно не отображается"
+  },
+  "nagorno-karabakh--nkao": {
+   "parts": [
+    "ne:B38",
+    "adm1:AZ-SUS",
+    "adm1:AZ-X01~",
+    "adm1:AZ-XVD",
+    "adm1:AZ-XCI",
+    "adm1:AZ-XA"
+   ],
+   "source": "Natural Earth 10m disputed areas (B38 «Artsakh») + admin-1 Азербайджана: Шушинский, Ходжавендский, Ходжалинский районы, Степанакерт (Ханкенди)",
+   "quality": "approximate",
+   "note": "Открытого слоя границ бывшей НКАО нет; контур собран из нескольких полигонов и приблизителен"
+  },
+  "nagorno-karabakh--districts": {
+   "parts": [
+    "adm1:AZ-KAL",
+    "adm1:AZ-LAN",
+    "adm1:AZ-QBI",
+    "adm1:AZ-ZAN",
+    "adm1:AZ-CAB",
+    "adm1:AZ-FUZ",
+    "adm1:AZ-AGM"
+   ],
+   "source": "Natural Earth 10m admin-1 Азербайджана: Кельбаджарский, Лачинский (в NE ошибочно подписан «Lankaran»), Губадлинский, Зангеланский, Джебраильский, Физулинский, Агдамский районы",
+   "quality": "approximate",
+   "note": "Агдамский и Физулинский районы включены целиком, хотя под контролем армянских сил находились частично"
+  },
+  "taiwan--all": {
+   "parts": [
+    "ne:B77"
+   ],
+   "source": "Natural Earth 10m disputed areas (B77 Taiwan)",
+   "quality": "generalized",
+   "note": null
+  },
+  "abkhazia--all": {
+   "parts": [
+    "ne:B35"
+   ],
+   "source": "Natural Earth 10m disputed areas (B35 Abkhazia)",
+   "quality": "generalized",
+   "note": null
+  },
+  "south-ossetia--all": {
+   "parts": [
+    "ne:B37"
+   ],
+   "source": "Natural Earth 10m disputed areas (B37 South Ossetia)",
+   "quality": "generalized",
+   "note": null
+  },
+  "transnistria--all": {
+   "parts": [
+    "ne:B36"
+   ],
+   "source": "Natural Earth 10m disputed areas (B36 Transnistria)",
+   "quality": "generalized",
+   "note": null
+  },
+  "kuril-islands--all": {
+   "parts": [
+    "ne:B29"
+   ],
+   "source": "Natural Earth 10m disputed areas (B29 Kuril Is.)",
+   "quality": "generalized",
+   "note": null
+  },
+  "kosovo--all": {
+   "parts": [
+    "ne:B57"
+   ],
+   "source": "Natural Earth 10m disputed areas (B57 Kosovo)",
+   "quality": "generalized",
+   "note": null
+  },
+  "gibraltar--all": {
+   "parts": [
+    "ne:B55"
+   ],
+   "source": "Natural Earth 10m disputed areas (B55 Gibraltar)",
+   "quality": "generalized",
+   "note": null
+  },
+  "golan-heights--golan": {
+   "parts": [
+    "ne:B16"
+   ],
+   "source": "Natural Earth 10m disputed areas (B16 Golan Heights)",
+   "quality": "generalized",
+   "note": null
+  },
+  "golan-heights--undof": {
+   "parts": [
+    "ne:B49"
+   ],
+   "source": "Natural Earth 10m disputed areas (B49 UNDOF Zone)",
+   "quality": "generalized",
+   "note": null
+  },
+  "palestinian-territories--west-bank": {
+   "parts": [
+    "ne:B54",
+    "ne:B78"
+   ],
+   "source": "Natural Earth 10m disputed areas (B54 West Bank, B78 No Man's Land Latrun)",
+   "quality": "generalized",
+   "note": null
+  },
+  "palestinian-territories--east-jerusalem": {
+   "parts": [
+    "ne:B98",
+    "ne:B79",
+    "ne:B99"
+   ],
+   "source": "Natural Earth 10m disputed areas (B98 East Jerusalem, B79 No Man's Land, B99 Mount Scopus)",
+   "quality": "generalized",
+   "note": null
+  },
+  "palestinian-territories--gaza": {
+   "parts": [
+    "ne:B53"
+   ],
+   "source": "Natural Earth 10m disputed areas (B53 Gaza)",
+   "quality": "generalized",
+   "note": null
+  },
+  "ukraine-east-south--dpr": {
+   "parts": [
+    "ne:C02"
+   ],
+   "source": "Natural Earth 10m disputed areas (C02 Donetsk People's Republic)",
+   "quality": "generalized",
+   "note": "Районы под контролем ДНР до 2022 г. по Natural Earth"
+  },
+  "ukraine-east-south--lpr": {
+   "parts": [
+    "ne:C03"
+   ],
+   "source": "Natural Earth 10m disputed areas (C03 Luhansk People's Republic)",
+   "quality": "generalized",
+   "note": "Районы под контролем ЛНР до 2022 г. по Natural Earth"
+  },
+  "ukraine-east-south--donetsk": {
+   "parts": [
+    {
+     "op": "difference",
+     "a": [
+      "adm1:UA-14"
+     ],
+     "b": [
+      "ne:C02"
+     ]
+    }
+   ],
+   "source": "Natural Earth 10m admin-1 (UA-14 Донецкая область) минус NE C02",
+   "quality": "approximate",
+   "note": "Вся остальная часть области; линия фронта после 2022 г. не показана"
+  },
+  "ukraine-east-south--luhansk": {
+   "parts": [
+    {
+     "op": "difference",
+     "a": [
+      "adm1:UA-09"
+     ],
+     "b": [
+      "ne:C03"
+     ]
+    }
+   ],
+   "source": "Natural Earth 10m admin-1 (UA-09 Луганская область) минус NE C03",
+   "quality": "approximate",
+   "note": "Вся остальная часть области; линия фронта после 2022 г. не показана"
+  },
+  "ukraine-east-south--zaporizhzhia": {
+   "parts": [
+    "adm1:UA-23"
+   ],
+   "source": "Natural Earth 10m admin-1 (UA-23 Запорожская область)",
+   "quality": "approximate",
+   "note": "Область целиком; линия фронта не показана"
+  },
+  "ukraine-east-south--kherson": {
+   "parts": [
+    "adm1:UA-65"
+   ],
+   "source": "Natural Earth 10m admin-1 (UA-65 Херсонская область)",
+   "quality": "approximate",
+   "note": "Область целиком; линия фронта не показана"
+  },
+  "northern-ireland-claim--all": {
+   "parts": [
+    "adm1unit:Northern Ireland"
+   ],
+   "source": "Natural Earth 10m admin-1 (geonunit «Northern Ireland»)",
+   "quality": "generalized",
+   "note": null
+  },
+  "south-tyrol--all": {
+   "parts": [
+    "adm1:IT-BZ"
+   ],
+   "source": "Natural Earth 10m admin-1 (IT-BZ, провинция Больцано)",
+   "quality": "generalized",
+   "note": null
+  },
+  "trieste--zone-a": {
+   "parts": [
+    "adm1:IT-TS"
+   ],
+   "source": "Natural Earth 10m admin-1 (IT-TS, провинция Триест)",
+   "quality": "approximate",
+   "note": "Зона A показана по современной провинции Триест"
+  },
+  "trieste--zone-b": {
+   "parts": [
+    "adm1:SI-050",
+    "adm1:SI-040",
+    "adm1:SI-090"
+   ],
+   "source": "Natural Earth 10m admin-1 (SI-050 Копер, SI-040 Изола, SI-090 Пиран)",
+   "quality": "approximate",
+   "note": "Только словенская часть зоны B; хорватская часть (район Буе) не показана"
+  },
+  "vilnius-region--all": {
+   "parts": [
+    {
+     "op": "intersection",
+     "a": [
+      "cshapes:368@first"
+     ],
+     "b": [
+      "cshapes:290@19210318"
+     ]
+    }
+   ],
+   "source": "CShapes 2.0: Литва (1918–1920) ∩ Польша (1921–1939)",
+   "quality": "approximate",
+   "note": "Совпадает со спорной территорией лишь в общих чертах"
+  },
+  "sudetenland--all": {
+   "parts": [
+    {
+     "op": "intersection",
+     "a": [
+      "cshapes:255@19381001"
+     ],
+     "b": [
+      "cshapes:315@19380929"
+     ]
+    }
+   ],
+   "source": "CShapes 2.0: Германия (с 30.09.1938) ∩ Чехословакия (до 29.09.1938)",
+   "quality": "derived",
+   "note": null
+  },
+  "polish-corridor--all": {
+   "parts": [
+    {
+     "op": "intersection",
+     "a": [
+      {
+       "op": "intersection",
+       "a": [
+        "cshapes:255@19140101"
+       ],
+       "b": [
+        "cshapes:290@19300101"
+       ]
+      }
+     ],
+     "b": [
+      "adm1:PL-PM",
+      "adm1:PL-KP"
+     ]
+    }
+   ],
+   "source": "CShapes 2.0: Германия (1914) ∩ Польша (1921–1945), в пределах NE admin-1 PL-PM и PL-KP",
+   "quality": "approximate",
+   "note": "Включает часть бывшей Познанской провинции (район Быдгоща)"
+  },
+  "upper-silesia--all": {
+   "parts": [
+    {
+     "op": "intersection",
+     "a": [
+      "adm1:PL-OP",
+      "adm1:PL-SL"
+     ],
+     "b": [
+      "cshapes:255@19140101"
+     ]
+    }
+   ],
+   "source": "Natural Earth 10m admin-1 (PL-OP, PL-SL) ∩ CShapes 2.0 (Германия, 1914)",
+   "quality": "approximate",
+   "note": "Больше плебисцитной области"
+  },
+  "serbian-krajina--east": {
+   "parts": [
+    "adm1:HR-14",
+    "adm1:HR-16"
+   ],
+   "source": "Natural Earth 10m admin-1 (HR-14, HR-16)",
+   "quality": "approximate",
+   "note": "Жупании показаны целиком, включая районы под контролем Хорватии"
+  },
+  "bosnia-war-entities--all": {
+   "parts": [
+    "cshapes:346@last"
+   ],
+   "source": "CShapes 2.0 (Босния и Герцеговина, GW 346)",
+   "quality": "generalized",
+   "note": "Страна целиком; линии фронта 1992–1995 гг. не показаны"
+  },
+  "danube-islands--vukovar": {
+   "parts": [
+    "ne:B96"
+   ],
+   "source": "Natural Earth 10m disputed areas (B96 Vukovar Island)",
+   "quality": "generalized",
+   "note": null
+  },
+  "danube-islands--sarengrad": {
+   "parts": [
+    "ne:B95"
+   ],
+   "source": "Natural Earth 10m disputed areas (B95 Šarengrad Island)",
+   "quality": "generalized",
+   "note": null
+  },
+  "estonia-russia-border--all": {
+   "parts": [
+    {
+     "op": "intersection",
+     "a": [
+      {
+       "op": "intersection",
+       "a": [
+        {
+         "op": "difference",
+         "a": [
+          "cshapes:366@19300101"
+         ],
+         "b": [
+          "cshapes:366@20000101"
+         ]
+        }
+       ],
+       "b": [
+        "adm1:RU-PSK"
+       ]
+      }
+     ],
+     "b": [
+      "bbox:27.0,57.2,28.6,58.4"
+     ]
+    }
+   ],
+   "source": "CShapes 2.0: Эстония (1920–1940) минус Эстония (с 1991), в пределах NE admin-1 RU-PSK; только Печорский край",
+   "quality": "approximate",
+   "note": "Земли к востоку от Нарвы не показаны"
+  },
+  "latvia-russia-abrene--all": {
+   "parts": [
+    {
+     "op": "intersection",
+     "a": [
+      {
+       "op": "difference",
+       "a": [
+        "cshapes:367@19300101"
+       ],
+       "b": [
+        "cshapes:367@20000101"
+       ]
+      }
+     ],
+     "b": [
+      "adm1:RU-PSK"
+     ]
+    }
+   ],
+   "source": "CShapes 2.0: Латвия (1920–1940) минус Латвия (с 1991), в пределах NE admin-1 RU-PSK",
+   "quality": "derived",
+   "note": null
+  }
+ }
+}

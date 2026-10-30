@@ -1,0 +1,12 @@
+﻿Vendor download log 2026-10-07T22:22:39
+OK  https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js  ->  site/vendor/maplibre-gl/maplibre-gl.js  (1056837 bytes)
+OK  https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css  ->  site/vendor/maplibre-gl/maplibre-gl.css  (70024 bytes)
+OK  https://unpkg.com/maplibre-gl@5.24.0/LICENSE.txt  ->  site/vendor/maplibre-gl/LICENSE.txt  (5984 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Regular/0-255.pbf  ->  site/assets/glyphs/Noto Sans Regular/0-255.pbf  (76580 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Regular/256-511.pbf  ->  site/assets/glyphs/Noto Sans Regular/256-511.pbf  (127219 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Regular/1024-1279.pbf  ->  site/assets/glyphs/Noto Sans Regular/1024-1279.pbf  (125222 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Regular/8192-8447.pbf  ->  site/assets/glyphs/Noto Sans Regular/8192-8447.pbf  (34070 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Bold/0-255.pbf  ->  site/assets/glyphs/Noto Sans Bold/0-255.pbf  (81170 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Bold/256-511.pbf  ->  site/assets/glyphs/Noto Sans Bold/256-511.pbf  (134545 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Bold/1024-1279.pbf  ->  site/assets/glyphs/Noto Sans Bold/1024-1279.pbf  (135287 bytes)
+OK  https://tiles.openfreemap.org/fonts/Noto%20Sans%20Bold/8192-8447.pbf  ->  site/assets/glyphs/Noto Sans Bold/8192-8447.pbf  (35678 bytes)

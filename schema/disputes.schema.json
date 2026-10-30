@@ -1,0 +1,967 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://example.org/disputes-map/schema/disputes.schema.json",
+ "title": "Disputed territories dataset (disputes.json)",
+ "description": "Схема записей о спорных территориях. Совместима с исходной схемой ТЗ; расширения описаны в docs/ARCHITECTURE.md §6.2.",
+ "type": "object",
+ "required": [
+  "meta",
+  "disputes"
+ ],
+ "properties": {
+  "meta": {
+   "type": "object"
+  },
+  "disputes": {
+   "type": "array",
+   "items": {
+    "$ref": "#/$defs/dispute"
+   }
+  }
+ },
+ "$defs": {
+  "i18n": {
+   "type": "object",
+   "required": [
+    "ru",
+    "en"
+   ],
+   "properties": {
+    "ru": {
+     "type": "string"
+    },
+    "en": {
+     "type": "string"
+    }
+   },
+   "additionalProperties": false
+  },
+  "i18nFilled": {
+   "allOf": [
+    {
+     "$ref": "#/$defs/i18n"
+    },
+    {
+     "properties": {
+      "ru": {
+       "minLength": 1
+      },
+      "en": {
+       "minLength": 1
+      }
+     }
+    }
+   ]
+  },
+  "actorCode": {
+   "type": "string",
+   "pattern": "^([A-Z]{3}|UN|LON|X-[A-Z0-9-]+)$"
+  },
+  "yearOrDate": {
+   "description": "Год (число) или дата ISO 8601 (строка YYYY, YYYY-MM или YYYY-MM-DD); null = неизвестно / по настоящее время",
+   "oneOf": [
+    {
+     "type": "null"
+    },
+    {
+     "type": "integer",
+     "minimum": 1700,
+     "maximum": 2100
+    },
+    {
+     "type": "string",
+     "pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$"
+    }
+   ]
+  },
+  "typeCode": {
+   "type": "string",
+   "enum": [
+    "sovereignty",
+    "occupation",
+    "secession",
+    "maritime",
+    "demarcation",
+    "decolonization",
+    "other"
+   ]
+  },
+  "controller": {
+   "type": "object",
+   "required": [
+    "state",
+    "from",
+    "to"
+   ],
+   "properties": {
+    "state": {
+     "$ref": "#/$defs/actorCode"
+    },
+    "from": {
+     "$ref": "#/$defs/yearOrDate"
+    },
+    "to": {
+     "$ref": "#/$defs/yearOrDate"
+    },
+    "control": {
+     "enum": [
+      "full",
+      "partial"
+     ],
+     "default": "full"
+    },
+    "controller_type": {
+     "enum": [
+      "state",
+      "partially_recognized_state",
+      "de_facto_authority",
+      "international_organization",
+      "international_regime",
+      "colonial_unit"
+     ]
+    },
+    "source_ids": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "source": {
+   "type": "object",
+   "required": [
+    "id",
+    "title",
+    "author",
+    "year",
+    "type",
+    "url",
+    "page_or_article",
+    "perspective",
+    "supports",
+    "verified_fulltext"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^[a-z0-9-]+$"
+    },
+    "title": {
+     "type": "string",
+     "minLength": 1
+    },
+    "author": {
+     "type": "string",
+     "minLength": 1
+    },
+    "year": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 1500,
+     "maximum": 2100,
+     "description": "null — дата публикации на странице не указана (не угадываем)"
+    },
+    "type": {
+     "enum": [
+      "договор",
+      "резолюция ООН",
+      "решение суда",
+      "академическая работа",
+      "архив",
+      "официальный документ стороны",
+      "датасет",
+      "справочное издание",
+      "документ Лиги Наций",
+      "публикация СМИ"
+     ]
+    },
+    "url": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "format": "uri"
+    },
+    "doi": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "page_or_article": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "perspective": {
+     "description": "Чью позицию отражает источник: код стороны (или несколько через запятую для совместных документов сторон), 'international' (ООН, суды) или 'neutral' (академия, датасеты)",
+     "type": "string",
+     "pattern": "^(international|neutral|[A-Z]{3}|UN|X-[A-Z0-9-]+)(,([A-Z]{3}|X-[A-Z0-9-]+))*$"
+    },
+    "supports": {
+     "description": "Какие утверждения записи подкрепляет источник",
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "enum": [
+       "period.start",
+       "period.end",
+       "claimants",
+       "de_facto_controller",
+       "legal_status",
+       "type",
+       "positions",
+       "international_position",
+       "summary",
+       "geometry",
+       "alt_names"
+      ]
+     }
+    },
+    "verified_fulltext": {
+     "type": "boolean"
+    },
+    "accessed": {
+     "type": [
+      "string",
+      "null"
+     ],
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "language": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "note": {
+     "type": [
+      "string",
+      "null"
+     ]
+    }
+   },
+   "additionalProperties": false,
+   "allOf": [
+    {
+     "description": "Номер страницы/статьи допустим только если полный текст проверен",
+     "if": {
+      "properties": {
+       "verified_fulltext": {
+        "const": false
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "page_or_article": {
+        "type": "null"
+       }
+      }
+     }
+    }
+   ]
+  },
+  "dispute": {
+   "type": "object",
+   "required": [
+    "id",
+    "name",
+    "territory",
+    "claimants",
+    "de_facto_controller",
+    "period",
+    "type",
+    "legal_status",
+    "summary",
+    "sources",
+    "confidence",
+    "needs_human_review",
+    "geometry",
+    "review"
+   ],
+   "properties": {
+    "id": {
+     "type": "string",
+     "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "name": {
+     "$ref": "#/$defs/i18nFilled"
+    },
+    "territory": {
+     "$ref": "#/$defs/i18nFilled"
+    },
+    "alt_names": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "name",
+       "lang",
+       "used_by"
+      ],
+      "properties": {
+       "name": {
+        "type": "string",
+        "minLength": 1
+       },
+       "lang": {
+        "type": "string"
+       },
+       "used_by": {
+        "type": "array",
+        "items": {
+         "$ref": "#/$defs/actorCode"
+        }
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "region": {
+     "enum": [
+      "europe",
+      "caucasus_central_asia",
+      "mena",
+      "subsaharan_africa",
+      "south_asia",
+      "east_southeast_asia",
+      "americas",
+      "oceania_polar"
+     ]
+    },
+    "claimants": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "object",
+      "required": [
+       "actor",
+       "from",
+       "to"
+      ],
+      "properties": {
+       "actor": {
+        "$ref": "#/$defs/actorCode"
+       },
+       "from": {
+        "$ref": "#/$defs/yearOrDate"
+       },
+       "to": {
+        "$ref": "#/$defs/yearOrDate"
+       },
+       "basis": {
+        "oneOf": [
+         {
+          "type": "null"
+         },
+         {
+          "$ref": "#/$defs/i18n"
+         }
+        ]
+       },
+       "source_ids": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "claim_type": {
+        "enum": [
+         "sovereignty",
+         "special_rights"
+        ],
+        "default": "sovereignty",
+        "description": "sovereignty — претензия на суверенитет; special_rights — особые права без претензии на суверенитет (например, права Польши в Данциге 1920–1939)"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "de_facto_controller": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/controller"
+     }
+    },
+    "areas": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "area_id",
+       "name",
+       "de_facto_controller"
+      ],
+      "properties": {
+       "area_id": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+       },
+       "name": {
+        "$ref": "#/$defs/i18nFilled"
+       },
+       "de_facto_controller": {
+        "type": "array",
+        "items": {
+         "$ref": "#/$defs/controller"
+        }
+       },
+       "external_control": {
+        "type": "array",
+        "items": {
+         "$ref": "#/$defs/externalControl"
+        }
+       },
+       "claimants": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+         "type": "object",
+         "required": [
+          "actor",
+          "from",
+          "to"
+         ],
+         "properties": {
+          "actor": {
+           "$ref": "#/$defs/actorCode"
+          },
+          "from": {
+           "$ref": "#/$defs/yearOrDate"
+          },
+          "to": {
+           "$ref": "#/$defs/yearOrDate"
+          },
+          "basis": {
+           "oneOf": [
+            {
+             "type": "null"
+            },
+            {
+             "$ref": "#/$defs/i18n"
+            }
+           ]
+          },
+          "source_ids": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "claim_type": {
+           "enum": [
+            "sovereignty",
+            "special_rights"
+           ],
+           "default": "sovereignty",
+           "description": "sovereignty — претензия на суверенитет; special_rights — особые права без претензии на суверенитет (например, права Польши в Данциге 1920–1939)"
+          }
+         },
+         "additionalProperties": false
+        }
+       },
+       "un_listing": {
+        "type": "array",
+        "items": {
+         "$ref": "#/$defs/unListing"
+        }
+       },
+       "period": {
+        "type": "object",
+        "properties": {
+         "start": {
+          "type": [
+           "integer",
+           "null"
+          ]
+         },
+         "end": {
+          "type": [
+           "integer",
+           "null"
+          ]
+         },
+         "start_date": {
+          "type": [
+           "string",
+           "null"
+          ]
+         },
+         "end_date": {
+          "type": [
+           "string",
+           "null"
+          ]
+         }
+        },
+        "additionalProperties": false,
+        "description": "Собственный период зоны, если он отличается от периода спора"
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "period": {
+     "type": "object",
+     "required": [
+      "start",
+      "end"
+     ],
+     "properties": {
+      "start": {
+       "type": [
+        "integer",
+        "null"
+       ],
+       "minimum": 1700,
+       "maximum": 2100
+      },
+      "end": {
+       "type": [
+        "integer",
+        "null"
+       ],
+       "minimum": 1900,
+       "maximum": 2100
+      },
+      "start_date": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\d{4}-\\d{2}(-\\d{2})?$"
+      },
+      "end_date": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\d{4}-\\d{2}(-\\d{2})?$"
+      }
+     },
+     "additionalProperties": false
+    },
+    "type": {
+     "$ref": "#/$defs/typeCode"
+    },
+    "secondary_types": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "type",
+       "qualified_by"
+      ],
+      "properties": {
+       "type": {
+        "$ref": "#/$defs/typeCode"
+       },
+       "qualified_by": {
+        "description": "id источников (акты ООН, Лиги Наций, международных судов), квалифицирующих ситуацию этим типом",
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "legal_status": {
+     "$ref": "#/$defs/i18n"
+    },
+    "positions": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "actor",
+       "text",
+       "source_ids"
+      ],
+      "properties": {
+       "actor": {
+        "$ref": "#/$defs/actorCode"
+       },
+       "text": {
+        "$ref": "#/$defs/i18nFilled"
+       },
+       "source_ids": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "additionalProperties": false
+     }
+    },
+    "international_position": {
+     "oneOf": [
+      {
+       "type": "null"
+      },
+      {
+       "type": "object",
+       "required": [
+        "text",
+        "source_ids"
+       ],
+       "properties": {
+        "text": {
+         "$ref": "#/$defs/i18nFilled"
+        },
+        "source_ids": {
+         "type": "array",
+         "minItems": 1,
+         "items": {
+          "type": "string"
+         }
+        }
+       },
+       "additionalProperties": false
+      }
+     ]
+    },
+    "summary": {
+     "$ref": "#/$defs/i18n"
+    },
+    "sources": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/source"
+     }
+    },
+    "geometry": {
+     "type": "object",
+     "required": [
+      "quality",
+      "source"
+     ],
+     "properties": {
+      "quality": {
+       "enum": [
+        "exact",
+        "generalized",
+        "derived",
+        "approximate",
+        "none"
+       ]
+      },
+      "method": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 5
+      },
+      "source": {
+       "type": "string"
+      },
+      "license": {
+       "type": [
+        "string",
+        "null"
+       ]
+      },
+      "note": {
+       "type": [
+        "string",
+        "null"
+       ]
+      }
+     },
+     "additionalProperties": false
+    },
+    "confidence": {
+     "enum": [
+      "high",
+      "medium",
+      "low"
+     ]
+    },
+    "needs_human_review": {
+     "type": "boolean"
+    },
+    "review": {
+     "type": "object",
+     "required": [
+      "status"
+     ],
+     "properties": {
+      "status": {
+       "enum": [
+        "skeleton",
+        "draft",
+        "verified"
+       ]
+      },
+      "last_checked": {
+       "type": [
+        "string",
+        "null"
+       ],
+       "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+      },
+      "conflicts": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      },
+      "notes": {
+       "type": "array",
+       "items": {
+        "type": "string"
+       }
+      }
+     },
+     "additionalProperties": false
+    },
+    "batch": {
+     "type": "integer",
+     "minimum": 1
+    },
+    "v1": {
+     "type": "boolean"
+    },
+    "external_control": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/externalControl"
+     }
+    },
+    "history": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/historyEvent"
+     },
+     "description": "Хронология событий; каждое событие ссылается на источники записи"
+    },
+    "un_listing": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/unListing"
+     }
+    }
+   },
+   "additionalProperties": false,
+   "allOf": [
+    {
+     "description": "Низкая уверенность → обязательна ручная проверка",
+     "if": {
+      "properties": {
+       "confidence": {
+        "const": "low"
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "needs_human_review": {
+        "const": true
+       }
+      }
+     }
+    },
+    {
+     "description": "Непустой список противоречий → обязательна ручная проверка",
+     "if": {
+      "properties": {
+       "review": {
+        "properties": {
+         "conflicts": {
+          "minItems": 1
+         }
+        }
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "needs_human_review": {
+        "const": true
+       }
+      }
+     }
+    },
+    {
+     "description": "Каркас: всегда на ручную проверку, уверенность low",
+     "if": {
+      "properties": {
+       "review": {
+        "properties": {
+         "status": {
+          "const": "skeleton"
+         }
+        }
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "needs_human_review": {
+        "const": true
+       },
+       "confidence": {
+        "const": "low"
+       }
+      }
+     }
+    },
+    {
+     "description": "Черновик и проверенная запись: заполнены описание, правовой статус, ≥2 источника, last_checked",
+     "if": {
+      "properties": {
+       "review": {
+        "properties": {
+         "status": {
+          "enum": [
+           "draft",
+           "verified"
+          ]
+         }
+        }
+       }
+      }
+     },
+     "then": {
+      "properties": {
+       "summary": {
+        "$ref": "#/$defs/i18nFilled"
+       },
+       "legal_status": {
+        "$ref": "#/$defs/i18nFilled"
+       },
+       "sources": {
+        "minItems": 2
+       },
+       "secondary_types": {
+        "items": {
+         "if": {
+          "properties": {
+           "type": {
+            "const": "occupation"
+           }
+          }
+         },
+         "then": {
+          "properties": {
+           "qualified_by": {
+            "minItems": 1
+           }
+          }
+         }
+        }
+       },
+       "review": {
+        "properties": {
+         "last_checked": {
+          "type": "string"
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "externalControl": {
+   "type": "object",
+   "required": [
+    "state",
+    "from",
+    "to",
+    "basis",
+    "source_ids"
+   ],
+   "description": "Внешний эффективный контроль, установленный международным судом (например, ЕСПЧ); не равен фактическому контролёру на месте",
+   "properties": {
+    "state": {
+     "$ref": "#/$defs/actorCode"
+    },
+    "from": {
+     "$ref": "#/$defs/yearOrDate"
+    },
+    "to": {
+     "$ref": "#/$defs/yearOrDate"
+    },
+    "basis": {
+     "$ref": "#/$defs/i18nFilled"
+    },
+    "source_ids": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "string"
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "historyEvent": {
+   "type": "object",
+   "required": [
+    "date",
+    "kind",
+    "text",
+    "source_ids"
+   ],
+   "properties": {
+    "date": {
+     "type": "string",
+     "pattern": "^\\d{4}(-\\d{2}(-\\d{2})?)?$"
+    },
+    "kind": {
+     "enum": [
+      "background",
+      "event",
+      "control",
+      "legal"
+     ],
+     "description": "background — предыстория; event — событие; control — смена фактического контроля; legal — правовой акт или решение"
+    },
+    "text": {
+     "$ref": "#/$defs/i18nFilled"
+    },
+    "source_ids": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "string"
+     }
+    }
+   },
+   "additionalProperties": false
+  },
+  "unListing": {
+   "type": "object",
+   "required": [
+    "from",
+    "to",
+    "source_ids"
+   ],
+   "properties": {
+    "from": {
+     "$ref": "#/$defs/yearOrDate"
+    },
+    "to": {
+     "$ref": "#/$defs/yearOrDate"
+    },
+    "source_ids": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   },
+   "additionalProperties": false,
+   "description": "Период, когда территория числилась в списке несамоуправляющихся территорий ООН"
+  }
+ }
+}

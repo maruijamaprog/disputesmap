@@ -1,0 +1,10 @@
+# Справочник участников дипломатических отношений: код Wikidata, ISO 3166-1 alpha-3, названия RU/EN,
+# дата прекращения существования (P576) и членство в ООН (P463 = Q1065).
+SELECT DISTINCT ?item ?iso ?ru ?en ?dissolved ?un WHERE {
+  { ?item p:P530 [] . } UNION { [] ps:P530 ?item . }
+  OPTIONAL { ?item wdt:P298 ?iso . }
+  OPTIONAL { ?item rdfs:label ?ru . FILTER(LANG(?ru) = "ru") }
+  OPTIONAL { ?item rdfs:label ?en . FILTER(LANG(?en) = "en") }
+  OPTIONAL { ?item wdt:P576 ?dissolved . }
+  OPTIONAL { ?item wdt:P463 wd:Q1065 . BIND(1 AS ?un) }
+}
