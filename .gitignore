@@ -1,0 +1,8 @@
+# исходные датасеты (скачиваются scripts/download_raw.bat, в репозиторий не кладём)
+raw/
+# служебное
+scripts/*_log.txt
+site/data/build_log.txt
+__pycache__/
+.DS_Store
+Thumbs.db
