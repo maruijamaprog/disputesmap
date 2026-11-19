@@ -87,7 +87,7 @@ python scripts\check_data.py . check.json
 
 Перед загрузкой изменений на GitHub: `python scripts\set_version.py` — ставит новую метку версии в `site/index.html` и `site/methodology.html`, чтобы браузеры загрузили свежие файлы, а не старые копии из кэша.
 
-- `build_wars.py` берёт войны 1900–1945 из Correlates of War, 1946–2025 — из UCDP/PRIO 26.1. Конфликты 2025 г. продолжаются в 2026 г. с пометкой «не проверено», пока в `data/wars_manual.json` нет решения по источникам.
+- `build_wars.py` берёт войны 1900–1945 из Correlates of War, 1946–2025 — из UCDP/PRIO 26.1. Конфликты 2025 г. продолжаются в 2026 г. с пометкой «не проверено», пока в `data/wars_manual.json` нет решения по источникам. Незакрытые конфликты длятся до наших дней, а не до даты сборки; проверенное участие после даты проверки (`checked` в `wars_manual.json`) помечается «более поздних сведений нет».
 - `build_diplomacy.py` показывает только проверенные сведения из `data/diplomacy_curated.json`; из Wikidata берутся лишь названия государств.
 - Файл UCDP (`ucdp-prio-acd-261-csv.zip`) и файлы Correlates of War кладутся в `raw/` скриптом `download_extra.bat`. Архив `States2024.zip` антивирус может заблокировать — для сборки он не нужен.
 

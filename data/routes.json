@@ -1088,7 +1088,7 @@
    },
    "analysis": null,
    "bottlenecks": [],
-   "footnotes": true
+   "footnotes": false
   },
   {
    "id": "traceca",
@@ -2324,7 +2324,7 @@
    },
    "analysis": null,
    "bottlenecks": [],
-   "footnotes": true
+   "footnotes": false
   },
   {
    "id": "middle",
@@ -2856,7 +2856,7 @@
    },
    "analysis": "eastwest",
    "bottlenecks": [],
-   "footnotes": true
+   "footnotes": false
   },
   {
    "id": "imec",
@@ -3242,7 +3242,7 @@
    },
    "analysis": null,
    "bottlenecks": [],
-   "footnotes": true
+   "footnotes": false
   },
   {
    "id": "tripp",
@@ -3465,7 +3465,7 @@
    },
    "analysis": null,
    "bottlenecks": [],
-   "footnotes": true
+   "footnotes": false
   }
  ],
  "analyses": {
