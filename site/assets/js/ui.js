@@ -3,7 +3,7 @@ import { t, tx, getLang } from './i18n.js';
 import { units, controllersAt, unitVisible, partiesIn } from './roles.js';
 import { formatMonth, formatDate, formatRange, activeAt } from './time.js';
 import { patternDataURL } from './map.js';
-import { yearsOf } from './wars.js';
+import { yearsOf, warsLoaded } from './wars.js';
 import { routeStatus, segmentOperating, dint } from './routes.js';
 
 export function el(tag, attrs = {}, ...children) {
@@ -348,6 +348,9 @@ export function renderRouteCard(card, { r, T, actors, nodes, through, analysis =
   // источники справки «Значение» нумеруются после источников маршрута (общие — один раз)
   const extraSrc = analysis ? analysis.sources.filter((s) => !r.sources.some((x) => x.id === s.id)) : [];
   const srcIndex = new Map([...r.sources, ...extraSrc].map((s, i) => [s.id, i + 1]));
+  // в карточках маршрутов сносок [n] нет (просьба автора): источники собраны на вкладке «Источники»; включить можно флагом footnotes=true
+  const R = r.footnotes === true ? (ids) => refs(ids, srcIndex, did) : () => [];
+  const single = (x) => ((x.single ?? (x.source_ids || []).length < 2) ? el('span', { class: 'badge warn', text: t('route.single') }) : null);
   const st = routeStatus(r, T.ref);
   // названия и переходы: сначала из справки «Значение» (там есть код страны CShapes), затем из справочников
   const anActor = (code) => analysis?.actors.find((a) => a.code === code) || null;
@@ -356,10 +359,10 @@ export function renderRouteCard(card, { r, T, actors, nodes, through, analysis =
   const actorLink = (code) => el('button', { type: 'button', class: 'linklike', onclick: () => openCountry(code), text: cname(code) });
   const nodeName = (id) => (nodes[id] ? (lang === 'ru' ? nodes[id].ru : nodes[id].en) : null);
 
+  // плашки «Требует проверки» у маршрутов нет (просьба автора); открытые вопросы — на вкладке «Источники»
   const badges = el('div', { class: 'badges' },
     el('span', { class: `badge${st === 'operating' ? ' live' : st === 'none' ? '' : ' plan'}`, text: t(`route.status.${st}`) }),
-    el('span', { class: `badge${r.confidence === 'low' ? ' warn' : ''}`, text: t(`conf.${r.confidence}`) }),
-    r.needs_human_review ? el('span', { class: 'badge warn', text: t('badge.review') }) : null);
+    el('span', { class: `badge${r.confidence === 'low' ? ' warn' : ''}`, text: t(`conf.${r.confidence}`) }));
 
   // ветви: цепочки узлов, недостроенные участки помечены
   const branches = el('ul', { class: 'plain route-branches' }, r.branches.map((b) => el('li', {},
@@ -391,7 +394,7 @@ export function renderRouteCard(card, { r, T, actors, nodes, through, analysis =
   // загрузка: пропускная способность и ряды по годам
   const caps = r.capacity.length
     ? el('ul', { class: 'plain caps' }, r.capacity.map((c) => el('li', {},
-        el('span', { class: 'role-chip', text: t(`route.cap.${c.kind}`) }), ' ', tx(c.text), ' ', refs(c.source_ids, srcIndex, did))))
+        el('span', { class: 'role-chip', text: t(`route.cap.${c.kind}`) }), ' ', tx(c.text), ' ', R(c.source_ids), single(c))))
     : el('p', { class: 'muted', text: t('route.nocapacity') });
   const series = r.volumes.length ? r.volumes.map((sr) => {
     const max = Math.max(...sr.points.map((p) => p.value)) || 1;
@@ -403,15 +406,18 @@ export function renderRouteCard(card, { r, T, actors, nodes, through, analysis =
           el('span', { class: 'bar-year', text: String(p.year) }),
           el('span', { class: 'bar-track' }, el('span', { class: 'bar-fill', style: `width:${Math.max(2, (p.value / max) * 100)}%;background:${r.color}` })),
           el('span', { class: 'bar-val', text: p.value.toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-GB', { maximumFractionDigits: 3 }) }),
-          el('span', { class: 'bar-src' }, refs(p.source_ids, srcIndex, did), p.source_ids.length < 2 ? el('span', { class: 'badge warn', text: t('route.single') }) : null));
+          el('span', { class: 'bar-src' }, R(p.source_ids), single(p)));
       })),
       sr.note ? el('p', { class: 'small muted', text: tx(sr.note) }) : null);
   }) : [el('p', { class: 'muted', text: t('route.novolumes') })];
-  const load = [el('h3', { text: t('route.capacity') }), caps, el('h3', { text: t('route.volumes') }), ...series];
+  const bottlenecks = (r.bottlenecks || []).length
+    ? [el('h3', { text: t('route.bottlenecks') }), el('ul', { class: 'plain pts' }, r.bottlenecks.map((b) => el('li', {}, tx(b.text), ' ', R(b.source_ids), single(b))))]
+    : [];
+  const load = [el('h3', { text: t('route.capacity') }), caps, el('h3', { text: t('route.volumes') }), ...series, ...bottlenecks];
 
   const history = r.history.length
     ? el('ol', { class: 'history' }, r.history.map((h) => el('li', { class: `h-${h.kind || 'event'}${dint(h.date) > T.ref ? ' later' : ''}` },
-        el('time', { text: formatDate(h.date, lang) }), el('p', {}, tx(h.text), ' ', refs(h.source_ids, srcIndex, did)))))
+        el('time', { text: formatDate(h.date, lang) }), el('p', {}, tx(h.text), ' ', R(h.source_ids)))))
     : el('p', { class: 'muted', text: t('card.history.none') });
 
   const srcItem = (s) => el('li', { id: `src-${did}-${s.id}` },
@@ -431,8 +437,7 @@ export function renderRouteCard(card, { r, T, actors, nodes, through, analysis =
   ] : null;
 
   // справка «Значение»: общие разделы (вкладка) и выбор страны (внизу карточки)
-  const point = (pt) => el('li', {}, tx(pt.text), ' ', refs(pt.source_ids, srcIndex, did),
-    pt.single ? el('span', { class: 'badge warn', text: t('route.single') }) : null);
+  const point = (pt) => el('li', {}, tx(pt.text), ' ', R(pt.source_ids), single(pt));
   const meaning = analysis ? [
     el('p', { class: 'small muted', text: tx(analysis.scope) }),
     ...analysis.general.map((sec) => [el('h3', { text: tx(sec.title) }), el('ul', { class: 'plain pts' }, sec.points.map(point))]),
@@ -614,7 +619,12 @@ export function kindAt(c, T) {
 export function renderConflictCard(card, { c, T, gwName, onCountry, onClose }) {
   const lang = getLang();
   const at = c.parts.filter((p) => p.from <= T.to && p.to >= T.from);
-  const unverified = at.length && at.every((p) => p.unverified);
+  // пометку о проверке определяют основные стороны (роль 1); поддержка войсками не должна её перебивать
+  const mainAt = at.filter((p) => p.role === 1);
+  const base = mainAt.length ? mainAt : at;
+  const unverified = base.length && base.every((p) => p.unverified);
+  const stale = base.length && base.every((p) => p.stale);
+  const checked = warsLoaded()?.meta?.checked;
   const int = Math.max(0, ...at.map((p) => p.int || 0));
   const sideList = (side) => {
     const rows = new Map();
@@ -635,7 +645,8 @@ export function renderConflictCard(card, { c, T, gwName, onCountry, onClose }) {
     cardHead({ eyebrow: `${t('war.eyebrow')} · ${t(`war.kind.${kindAt(c, T)}`)}`, title: conflictTitle(c, gwName),
       sub: c.inc ? t(`war.inc.long.${c.inc}`) + (c.terr ? `: ${c.terr}` : '') : null, onClose }),
     kv([[t('war.period'), formatRange(c.start, c.end, lang)],
-        [t('war.int.now', { date: formatMonth(T, lang) }), at.length ? (unverified ? t('war.unverified', { int: t(`war.int.${int}`) }) : t(`war.int.${int}`)) : t('war.inactive')],
+        [t('war.int.now', { date: formatMonth(T, lang) }), at.length ? (stale && checked ? t('war.stale', { int: t(`war.int.${int}`), date: formatDate(checked, lang) })
+          : unverified ? t('war.unverified', { int: t(`war.int.${int}`) }) : t(`war.int.${int}`)) : t('war.inactive')],
         [t('war.source'), el('span', {}, t(`war.src.${c.src}`), c.url ? [' · ', el('a', { href: c.url, target: '_blank', rel: 'noopener noreferrer' }, t('war.src.open'), icon('ext', 'tiny'))] : null)]]),
     el('div', { class: 'sides' },
       el('section', { class: 'side' }, el('h3', { text: t('war.sideA') }), sideList(0)),

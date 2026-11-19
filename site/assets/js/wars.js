@@ -3,6 +3,8 @@
 //   сторона: 0 — A, 1 — B; роль: 1 — основная сторона, 2 — участвует войсками на стороне основной;
 //   интенсивность: 2 — война (≥1000 погибших в бою за год), 1 — вооружённый конфликт (25–999).
 //   gw = 0 — негосударственная сторона (имя в 7-м поле).
+//   флаг: u — продолжение 2026 г. по данным UCDP за 2025 г., не проверено; c — участие проверено по дате meta.checked,
+//   дальше конфликт не закрыт, но новых сведений нет. Незакрытые конфликты длятся до 99991231 (до наших дней).
 
 import { withV } from './version.js';
 
@@ -16,7 +18,7 @@ export function loadWars() {
       if (!r.ok) throw new Error(`wars.json: ${r.status}`);
       return r.json();
     }).then((j) => {
-      for (const c of j.conflicts) c.parts = c.parts.map(([g, side, role, from, to, int, name, flag]) => ({ g, side, role, from, to, int, name: name || null, unverified: flag === 'u' }));
+      for (const c of j.conflicts) c.parts = c.parts.map(([g, side, role, from, to, int, name, flag]) => ({ g, side, role, from, to, int, name: name || null, unverified: flag === 'u' || flag === 'c', stale: flag === 'c' }));
       data = j; return j;
     });
   }
@@ -81,8 +83,10 @@ export function warRoleMap(T, selectedGw) {
 /** Годы с интенсивностью (для мини-диаграммы в карточке). */
 export function yearsOf(c) {
   const m = new Map();
+  const thisYear = new Date().getFullYear();   // незакрытый конфликт (конец 99991231) — до текущего года
   for (const p of c.parts) {
-    for (let y = Math.floor(p.from / 10000); y <= Math.floor(p.to / 10000); y++) m.set(y, Math.max(m.get(y) || 0, p.int || 1));
+    const last = Math.min(Math.floor(p.to / 10000), thisYear);
+    for (let y = Math.floor(p.from / 10000); y <= last; y++) m.set(y, Math.max(m.get(y) || 0, p.int || 1));
   }
   return [...m.entries()].sort((a, b) => a[0] - b[0]);
 }
