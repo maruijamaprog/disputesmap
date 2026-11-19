@@ -1,4 +1,6 @@
 // Строки интерфейса: i18n/ru.json, i18n/en.json. Язык: URL (#lang=), затем navigator.language, по умолчанию ru.
+import { withV } from './version.js';
+
 let dict = {};
 let lang = 'ru';
 
@@ -6,7 +8,7 @@ export function getLang() { return lang; }
 
 export async function setLang(l) {
   lang = l === 'en' ? 'en' : 'ru';
-  const res = await fetch(`i18n/${lang}.json`);
+  const res = await fetch(withV(`i18n/${lang}.json`));
   dict = await res.json();
   document.documentElement.lang = lang;
   apply(document);
@@ -32,13 +34,14 @@ export function tx(obj) {
   return obj[lang] || obj.ru || obj.en || '';
 }
 
+// Если строки нет в словаре (например, браузер взял старый файл из кэша), остаётся текст из разметки, а не ключ.
 export function apply(root) {
-  root.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  root.querySelectorAll('[data-i18n]').forEach((el) => { const k = el.dataset.i18n; if (k in dict) el.textContent = dict[k]; });
   root.querySelectorAll('[data-i18n-attr]').forEach((el) => {
     // формат: "aria-label:key;title:key2"
     el.dataset.i18nAttr.split(';').forEach((pair) => {
       const [attr, key] = pair.split(':');
-      if (attr && key) el.setAttribute(attr.trim(), t(key.trim()));
+      if (attr && key && key.trim() in dict) el.setAttribute(attr.trim(), dict[key.trim()]);
     });
   });
 }

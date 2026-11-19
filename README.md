@@ -59,6 +59,7 @@ disputes-map/
 │   ├── build_site_data.py    data/disputes.json → site/data/
 │   ├── build_wars.py         UCDP + COW + wars_manual.json → site/data/wars.json
 │   ├── build_diplomacy.py    diplomacy_curated.json → site/data/diplomacy.json
+│   ├── set_version.py        метка версии для обхода кэша браузера (перед загрузкой на GitHub)
 │   ├── build_routes.py       data/routes.json → site/data/routes.json (транспортные маршруты, проверка линий)
 │   ├── check_data.py         проверка записей: схема, два источника, позиции сторон, лексика
 │   ├── data/                 скрипты партий: batch2*.py, batch3*.py, history_batch1.py
@@ -81,6 +82,8 @@ python scripts\data\routes_data.py data\routes.json
 python scripts\build_routes.py --raw raw --out site\data
 python scripts\check_data.py . check.json
 ```
+
+Перед загрузкой изменений на GitHub: `python scripts\set_version.py` — ставит новую метку версии в `site/index.html` и `site/methodology.html`, чтобы браузеры загрузили свежие файлы, а не старые копии из кэша.
 
 - `build_wars.py` берёт войны 1900–1945 из Correlates of War, 1946–2025 — из UCDP/PRIO 26.1. Конфликты 2025 г. продолжаются в 2026 г. с пометкой «не проверено», пока в `data/wars_manual.json` нет решения по источникам.
 - `build_diplomacy.py` показывает только проверенные сведения из `data/diplomacy_curated.json`; из Wikidata берутся лишь названия государств.

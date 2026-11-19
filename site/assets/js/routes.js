@@ -1,11 +1,13 @@
 // Слой «Транспортные маршруты»: загрузка site/data/routes.json и статус маршрута на дату.
 // Пунктир — объявлен, не построен; сплошная — действует (по первой реальной перевозке).
 
+import { withV } from './version.js';
+
 let promise = null, data = null;
 
 export function loadRoutes() {
   if (!promise) {
-    promise = fetch('data/routes.json').then((r) => { if (!r.ok) throw new Error(`routes.json: ${r.status}`); return r.json(); })
+    promise = fetch(withV('data/routes.json')).then((r) => { if (!r.ok) throw new Error(`routes.json: ${r.status}`); return r.json(); })
       .then((d) => { data = d; return d; });
   }
   return promise;

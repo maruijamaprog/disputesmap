@@ -4,13 +4,15 @@
 //   интенсивность: 2 — война (≥1000 погибших в бою за год), 1 — вооружённый конфликт (25–999).
 //   gw = 0 — негосударственная сторона (имя в 7-м поле).
 
+import { withV } from './version.js';
+
 let data = null;
 let loading = null;
 
 export function loadWars() {
   if (data) return Promise.resolve(data);
   if (!loading) {
-    loading = fetch('data/wars.json').then((r) => {
+    loading = fetch(withV('data/wars.json')).then((r) => {
       if (!r.ok) throw new Error(`wars.json: ${r.status}`);
       return r.json();
     }).then((j) => {

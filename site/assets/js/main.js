@@ -1,5 +1,6 @@
 // Точка входа: загрузка данных, состояние, связь карты, шкалы времени и панели.
 import { setLang, detectLang, t, tx, getLang } from './i18n.js';
+import { withV } from './version.js';
 import { decode } from './topo.js';
 import { period, nowMonth, monthIndex, fromIndex, formatMonth, monthNames, MIN_YEAR, dStart, monthOf } from './time.js';
 import { units, unitVisible, disputeVisible, rolesFor, changedIn, eventMonths, actorSummary } from './roles.js';
@@ -77,7 +78,7 @@ function writeHash() {
 
 // ---------------------------------------------------------------- данные
 async function getJSON(url) {
-  const r = await fetch(url);
+  const r = await fetch(withV(url));
   if (!r.ok) throw new Error(`${url}: ${r.status}`);
   return r.json();
 }
@@ -626,7 +627,12 @@ async function main() {
     M?.setRoutesVisible(S.prefs.routes !== false);
     renderLegendNow();
     if (h.r && rd.routes.some((r) => r.id === h.r)) selectRoute(h.r, true, false); else refresh();
-  }).catch((e) => console.error(e));
+  }).catch((e) => {
+    // без данных маршрутов переключатель не делает ничего — говорим об этом прямо в меню
+    console.error(e);
+    $('#routes-error').hidden = false;
+    $('#chk-routes').disabled = true;
+  });
 
   // шкала времени
   const range = $('#tl-range');

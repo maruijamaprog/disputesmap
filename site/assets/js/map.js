@@ -175,13 +175,13 @@ export function createMap(container, handlers) {
     const off = ['match', ['get', 'r'], 'traceca', -2.2, 'middle', 2.2, 0];
     const vis = { visibility: 'none' };
     map.addLayer({ id: 'routes-casing', type: 'line', source: 'routes', layout: { ...vis, 'line-cap': 'round', 'line-join': 'round' },
-      paint: { 'line-color': c.labelHalo, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 3.6, 6, 6], 'line-opacity': 0.85, 'line-offset': off } });
+      paint: { 'line-color': c.labelHalo, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 4.6, 6, 6.6], 'line-opacity': 0.85, 'line-offset': off } });
     map.addLayer({ id: 'routes-sel', type: 'line', source: 'routes', layout: { ...vis, 'line-cap': 'round', 'line-join': 'round' }, filter: ['==', ['get', 'r'], NONE],
       paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 7, 6, 11], 'line-opacity': 0.28, 'line-offset': off } });
     map.addLayer({ id: 'routes-planned', type: 'line', source: 'routes', layout: { ...vis, 'line-join': 'round' },
-      paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1.8, 6, 3], 'line-dasharray': [2.2, 1.6], 'line-offset': off } });
+      paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.4, 6, 3.4], 'line-dasharray': [2.2, 1.6], 'line-offset': off } });
     map.addLayer({ id: 'routes-operating', type: 'line', source: 'routes', layout: { ...vis, 'line-cap': 'round', 'line-join': 'round' },
-      paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.2, 6, 3.6], 'line-offset': off } });
+      paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.8, 6, 4], 'line-offset': off } });
     map.addLayer({ id: 'routes-hit', type: 'line', source: 'routes', layout: vis,
       paint: { 'line-color': '#000', 'line-width': 14, 'line-opacity': 0, 'line-offset': off } });
     map.addLayer({

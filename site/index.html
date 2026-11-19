@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru" data-theme="light">
+<html lang="ru" data-theme="light" data-v="2026-11-19.2">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -16,7 +16,7 @@
     } catch (e) { /* ignore */ }
   </script>
   <link rel="stylesheet" href="vendor/maplibre-gl/maplibre-gl.css">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=2026-11-19.2">
 </head>
 <body data-mode="disputes">
   <a class="skip-link" href="#search" data-i18n="nav.skip">Перейти к списку</a>
@@ -67,7 +67,8 @@
         <span class="color-row"><input type="color" id="land-color" value="#f3f1ec"><button type="button" id="land-reset" class="linklike small" data-i18n="view.reset">сбросить</button></span>
       </div>
       <label class="switch"><input type="checkbox" id="chk-labels" checked> <span data-i18n="view.labels">Названия стран на карте</span></label>
-      <label class="switch"><input type="checkbox" id="chk-routes" checked> <span data-i18n="view.routes">Транспортные маршруты</span></label>
+      <label class="switch"><input type="checkbox" id="chk-routes" checked> <span data-i18n="view.routes">Показывать маршруты</span></label>
+      <p id="routes-error" class="small muted" role="status" data-i18n="view.routes.error" hidden>Данные маршрутов не загрузились. Обновите страницу без кэша (Ctrl+F5).</p>
     </div>
 
     <!-- всплывающее окно: фильтры -->
@@ -162,6 +163,22 @@
   </dialog>
 
   <script src="vendor/maplibre-gl/maplibre-gl.js"></script>
-  <script type="module" src="assets/js/main.js"></script>
+  <!-- версии модулей: после обновления сайта браузер загружает все файлы заново (scripts/set_version.py) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "./assets/js/i18n.js": "./assets/js/i18n.js?v=2026-11-19.2",
+      "./assets/js/map.js": "./assets/js/map.js?v=2026-11-19.2",
+      "./assets/js/roles.js": "./assets/js/roles.js?v=2026-11-19.2",
+      "./assets/js/routes.js": "./assets/js/routes.js?v=2026-11-19.2",
+      "./assets/js/time.js": "./assets/js/time.js?v=2026-11-19.2",
+      "./assets/js/topo.js": "./assets/js/topo.js?v=2026-11-19.2",
+      "./assets/js/ui.js": "./assets/js/ui.js?v=2026-11-19.2",
+      "./assets/js/version.js": "./assets/js/version.js?v=2026-11-19.2",
+      "./assets/js/wars.js": "./assets/js/wars.js?v=2026-11-19.2"
+    }
+  }
+  </script>
+  <script type="module" src="assets/js/main.js?v=2026-11-19.2"></script>
 </body>
 </html>
