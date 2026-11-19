@@ -5,8 +5,9 @@ import { period, nowMonth, monthIndex, fromIndex, formatMonth, monthNames, MIN_Y
 import { units, unitVisible, disputeVisible, rolesFor, changedIn, eventMonths, actorSummary } from './roles.js';
 import { createMap } from './map.js';
 import { loadWars, warsLoaded, conflictsAt, involvement, warRoleMap } from './wars.js';
+import { loadRoutes, routesLoaded, routesAt, routesForCountry, routeStatus } from './routes.js';
 import { el, icon, iconHTML, TYPES, actorName, renderLegend, renderTypeFilters, showTooltip, hideTooltip, controllerText,
-  buildOptions, renderList, renderCountryCard, renderDisputeCard, renderConflictCard, renderRefCard, conflictTitle } from './ui.js';
+  buildOptions, renderList, renderCountryCard, renderDisputeCard, renderConflictCard, renderRefCard, renderRouteCard, conflictTitle } from './ui.js';
 
 const $ = (s) => document.querySelector(s);
 const NOW = nowMonth();
@@ -16,11 +17,11 @@ const THEMES = ['auto', 'light', 'dark', 'political', 'atlas', 'contrast'];
 const S = {
   T: period(NOW.y, NOW.m), mode: 'disputes',
   actor: null, unitId: null, unitName: null, unitGw: null, unitIso: null, pinned: false,
-  selected: null, conflict: null, land: null,
+  selected: null, conflict: null, land: null, route: null,
   filters: { types: new Set(TYPES), status: 'all', lowconf: true },
   disputes: [], actors: {}, meta: null, units: [], eraCache: new Map(), eraKey: null, events: [], warEvents: [],
   playing: null, activeOption: null, diplo: null, diploLoading: null, warsState: 'idle',
-  prefs: { theme: 'auto', labels: true, land: null },
+  prefs: { theme: 'auto', labels: true, land: null, routes: true },
 };
 let M = null; // карта
 
@@ -46,6 +47,7 @@ function applyTheme() {
   const inp = $('#land-color');
   if (inp) { inp.disabled = resolvedTheme() === 'political'; if (S.prefs.land) inp.value = S.prefs.land; }
   $('#chk-labels') && ($('#chk-labels').checked = S.prefs.labels);
+  $('#chk-routes') && ($('#chk-routes').checked = S.prefs.routes !== false);
   M?.refreshTheme();
   renderLegendNow();
 }
@@ -57,7 +59,7 @@ function readHash() {
   const tt = p.get('t');
   if (tt && /^\d{4}-\d{2}$/.test(tt)) ym = { y: +tt.slice(0, 4), m: +tt.slice(5, 7) };
   else if (p.get('y')) ym = { y: +p.get('y'), m: 12 };
-  return { ym, a: p.get('a'), g: p.get('g') ? +p.get('g') : null, d: p.get('d'), c: p.get('c'), mode: p.get('mode'), lang: p.get('lang') };
+  return { ym, a: p.get('a'), g: p.get('g') ? +p.get('g') : null, d: p.get('d'), c: p.get('c'), r: p.get('r'), mode: p.get('mode'), lang: p.get('lang') };
 }
 function writeHash() {
   const p = new URLSearchParams();
@@ -67,6 +69,7 @@ function writeHash() {
   if (S.pinned && S.unitGw !== null && !S.actor) p.set('g', S.unitGw);
   if (S.selected) p.set('d', S.selected);
   if (S.conflict) p.set('c', S.conflict);
+  if (S.route) p.set('r', S.route);
   p.set('lang', getLang());
   history.replaceState(null, '', `#${p.toString()}`);
   $('#link-methodology').href = `methodology.html#lang=${getLang()}`;
@@ -210,7 +213,7 @@ function refresh() {
 }
 
 function renderLegendNow() {
-  renderLegend($('#legend'), S.mode, { selected: S.mode === 'wars' && S.unitGw !== null && S.pinned });
+  renderLegend($('#legend'), S.mode, { selected: S.mode === 'wars' && S.unitGw !== null && S.pinned, routes: S.prefs.routes !== false && !!routesLoaded() });
 }
 
 function renderCard() {
@@ -236,6 +239,14 @@ function renderCard() {
     renderRefCard(card, { p: S.land, T: S.T, onClose: closeCard });
     show(true); return;
   }
+  const RD = routesLoaded();
+  if (S.route && RD) {
+    const r = RD.routes.find((x) => x.id === S.route);
+    if (r) {
+      renderRouteCard(card, { r, T: S.T, actors: S.actors, nodes: RD.nodes, through: RD.through[r.id], onClose: closeCard, onActor: (code) => selectActor(code, true) });
+      show(true); return;
+    }
+  }
   if (S.pinned && (S.actor || S.unitId !== null || S.unitGw !== null)) {
     const title = S.actor ? actorName(S.actor, S.actors, S.unitName) : (S.unitGw !== null && !S.unitName ? gwName(S.unitGw) : S.unitName);
     const w = warsLoaded();
@@ -246,6 +257,7 @@ function renderCard() {
       wars: w && S.unitGw !== null ? involvement(S.unitGw, S.T) : [],
       warsState: w ? 'ready' : S.warsState === 'error' ? 'error' : 'loading',
       diplo: diploFor(S.unitIso), actors: S.actors, gwName, isoName,
+      routes: routesForCountry(S.actor || S.unitIso, S.T.ref), onOpenRoute: (id) => selectRoute(id, true),
       onOpenDispute: (id) => { setMode('disputes'); selectDispute(id, true); },
       onOpenConflict: (id) => { setMode('wars'); selectConflict(id); },
       onClose: closeCard,
@@ -255,7 +267,7 @@ function renderCard() {
   card.replaceChildren(); show(false);
 }
 
-function clearLand() { S.land = null; M?.setLandSelected(null); }
+function clearLand() { S.land = null; M?.setLandSelected(null); S.route = null; M?.setRouteSelected(null); }
 
 function closeCard() {
   S.selected = null; S.conflict = null; S.pinned = false; S.actor = null; S.unitId = null; S.unitName = null; S.unitGw = null; S.unitIso = null;
@@ -322,8 +334,25 @@ function selectConflict(id, focusCard = true) {
   if (focusCard) $('#card h2')?.focus();
 }
 
+/** Транспортный маршрут: справка в панели. */
+function selectRoute(id, fly = false, focusCard = true) {
+  const RD = routesLoaded();
+  const r = RD?.routes.find((x) => x.id === id);
+  if (!r) return;
+  clearLand();
+  S.selected = null; S.conflict = null; S.pinned = false; S.actor = null; S.unitId = null; S.unitName = null; S.unitGw = null; S.unitIso = null;
+  S.route = id; M?.setRouteSelected(id);
+  if (S.prefs.routes === false) { S.prefs.routes = true; savePrefs(); M?.setRoutesVisible(true); $('#chk-routes').checked = true; }
+  refresh(); renderLegendNow();
+  say(t('announce.route', { name: tx(r.name) }));
+  if (fly && M) M.flyToRoute(id);
+  openPanelOnMobile();
+  if (focusCard) $('#card h2')?.focus();
+}
+
 /** Территория без единицы CShapes: справка в панели. */
 function selectLand(p) {
+  S.route = null; M?.setRouteSelected(null);
   S.selected = null; S.conflict = null; S.pinned = false; S.actor = null; S.unitId = null; S.unitName = null; S.unitGw = null; S.unitIso = null;
   S.land = p; M?.setLandSelected(p.k);
   refresh(); renderLegendNow();
@@ -396,6 +425,13 @@ function updateList() {
   } else {
     groups = buildOptions(S.T, visibleDisputes(), S.actors, q);
   }
+  if (routesLoaded() && S.prefs.routes !== false) {
+    const qq = q.trim().toLowerCase().replaceAll('ё', 'е');
+    const opts = routesAt(S.T.ref).map((r) => ({ kind: 'route', id: r.id, label: tx(r.name), meta: t(`route.status.short.${routeStatus(r, S.T.ref)}`),
+      alt: `${r.name.ru} ${r.name.en}` }))
+      .filter((o) => !qq || o.alt.toLowerCase().replaceAll('ё', 'е').includes(qq)).sort((a, b) => a.label.localeCompare(b.label, getLang()));
+    groups.push({ title: t('list.routes'), opts });
+  }
   renderList($('#listbox'), groups, S.activeOption);
 }
 
@@ -416,6 +452,7 @@ function chooseOption(key) {
   if (kind === 'actor') selectActor(id);
   else if (kind === 'gw') selectGw(+id);
   else if (kind === 'conflict') selectConflict(id, false);
+  else if (kind === 'route') selectRoute(id, true, false);
   else selectDispute(id, true, false);
 }
 
@@ -431,6 +468,19 @@ function onHover(hit, point) {
   const tip = $('#tooltip');
   point = toApp(point);
   M.setLandHover(hit?.kind === 'ref' ? hit.props.k : null);
+  M.setRouteHover(hit?.kind === 'route' ? hit.props.r : null);
+  if (hit?.kind === 'route') {
+    const r = routesLoaded()?.routes.find((x) => x.id === hit.props.r);
+    M.setHoverDispute(null);
+    if (r) {
+      const st = routeStatus(r, S.T.ref);
+      const segPlanned = st === 'partial' && hit.props.o > S.T.ref;
+      showTooltip(tip, point, [el('strong', { text: tx(r.name) }), el('div', { text: t(`route.status.${st}`) }),
+        segPlanned ? el('div', { class: 'small', text: t('route.tip.seg.planned') }) : null,
+        el('div', { class: 'tip-hint', text: t('route.tip.hint') })].filter(Boolean));
+    }
+    return;
+  }
   if (hit?.kind === 'ref') {
     M.setHoverDispute(null);
     if (!S.pinned && S.mode === 'disputes' && (S.actor || S.unitId !== null)) { S.actor = null; S.unitId = null; refreshRolesOnly(); }
@@ -479,6 +529,7 @@ function onClick(hit) {
   if (!hit) { if (S.pinned || S.selected || S.conflict) closeCard(); return; }
   if (hit.kind === 'dispute') { selectDispute(hit.props.dispute_id, false, false); return; }
   if (hit.kind === 'ref') { selectLand(hit.props); return; }
+  if (hit.kind === 'route') { selectRoute(hit.props.r, false, false); return; }
   selectUnitProps(hit.props);
 }
 
@@ -569,6 +620,14 @@ async function main() {
   if (S.selected || S.pinned || S.conflict) openPanelOnMobile();
   if (S.selected && M) M.flyToFeatureBounds(S.selected);
 
+  // транспортные маршруты (слой в «Виде карты»); без них карта работает
+  loadRoutes().then((rd) => {
+    M?.setRoutesData(rd.geo);
+    M?.setRoutesVisible(S.prefs.routes !== false);
+    renderLegendNow();
+    if (h.r && rd.routes.some((r) => r.id === h.r)) selectRoute(h.r, true, false); else refresh();
+  }).catch((e) => console.error(e));
+
   // шкала времени
   const range = $('#tl-range');
   range.addEventListener('input', (e) => { stopPlay(); setMonth(+e.target.value); });
@@ -609,6 +668,11 @@ async function main() {
   $('#land-color').addEventListener('input', (e) => { S.prefs.land = e.target.value; savePrefs(); applyTheme(); });
   $('#land-reset').addEventListener('click', () => { S.prefs.land = null; savePrefs(); applyTheme(); });
   $('#chk-labels').addEventListener('change', (e) => { S.prefs.labels = e.target.checked; savePrefs(); M?.setLabels(S.prefs.labels, getLang()); });
+  $('#chk-routes').addEventListener('change', (e) => {
+    S.prefs.routes = e.target.checked; savePrefs(); M?.setRoutesVisible(S.prefs.routes);
+    if (!S.prefs.routes && S.route) closeCard(); else refresh();
+    renderLegendNow();
+  });
   bindPopover('#btn-view', '#pop-view');
   bindPopover('#btn-filters', '#pop-filters');
 
@@ -688,11 +752,12 @@ async function main() {
     const mode = n.mode === 'wars' ? 'wars' : 'disputes';
     if (mode !== S.mode) setMode(mode);
     if (n.ym && monthIndex(n.ym.y, n.ym.m) !== S.T.idx) await setMonth(monthIndex(n.ym.y, n.ym.m));
-    if (n.d && n.d !== S.selected && S.disputes.some((d) => d.id === n.d)) selectDispute(n.d, true, false);
+    if (n.r && n.r !== S.route && routesLoaded()) selectRoute(n.r, true, false);
+    else if (n.d && n.d !== S.selected && S.disputes.some((d) => d.id === n.d)) selectDispute(n.d, true, false);
     else if (n.c && n.c !== S.conflict) selectConflict(n.c, false);
     else if (n.a && n.a !== S.actor) selectActor(n.a);
     else if (n.g !== null && n.g !== S.unitGw) selectGw(n.g);
-    else if (!n.d && !n.c && !n.a && n.g === null && (S.selected || S.conflict || S.pinned)) closeCard();
+    else if (!n.r && !n.d && !n.c && !n.a && n.g === null && (S.selected || S.conflict || S.pinned || S.route)) closeCard();
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !document.querySelector('.popover:not([hidden])') && !dlg.open && (S.selected || S.pinned || S.conflict) && !e.target.closest('input')) closeCard();

@@ -4,6 +4,7 @@ import { units, controllersAt, unitVisible, partiesIn } from './roles.js';
 import { formatMonth, formatDate, formatRange, activeAt } from './time.js';
 import { patternDataURL } from './map.js';
 import { yearsOf } from './wars.js';
+import { routeStatus, segmentOperating, dint } from './routes.js';
 
 export function el(tag, attrs = {}, ...children) {
   const n = document.createElement(tag);
@@ -45,6 +46,7 @@ const ICONS = {
   chevron: '<path d="m9 6 6 6-6 6"/>',
   ext: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
   globe: '<circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c3 3.2 3 15.8 0 19M12 2.5c-3 3.2-3 15.8 0 19"/>',
+  route: '<circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="6" r="2.2"/><path d="M7 17.5c4-1 2.5-6 6-7.5s3.5-2 4.2-2.6"/>',
 };
 export function icon(name, cls = '') {
   return el('span', { class: `ico ${cls}`.trim(), 'aria-hidden': 'true',
@@ -63,17 +65,20 @@ export function actorName(code, actors, fallback) {
 }
 
 // ---------------------------------------------------------------- легенда
-export function renderLegend(root, mode, { selected = false } = {}) {
+export function renderLegend(root, mode, { selected = false, routes = false } = {}) {
   root.replaceChildren();
   const sw = (kind) => el('span', { class: 'swatch', style: `background-image:url(${patternDataURL(kind)})`, 'aria-hidden': 'true' });
   const item = (swatch, key) => el('li', {}, swatch, el('span', { text: t(key) }));
+  const routeItems = () => (routes ? [
+    item(el('span', { class: 'swatch route', 'aria-hidden': 'true' }), 'legend.route.op'),
+    item(el('span', { class: 'swatch route dashed', 'aria-hidden': 'true' }), 'legend.route.plan')] : []);
   if (mode === 'wars') {
     if (selected) {
       root.append(item(sw('WX'), 'legend.war.selected'), item(sw('WL'), 'legend.war.ally'), item(sw('WF'), 'legend.war.foe'), item(sw('WP'), 'legend.war.other'));
     } else {
       root.append(item(sw('WM'), 'legend.war.major'), item(sw('Wm'), 'legend.war.minor'), item(sw('WS'), 'legend.war.secondary'), item(sw('WU'), 'legend.war.unverified'));
     }
-    root.append(el('li', { class: 'legend-note', text: t('legend.war.note') }));
+    root.append(...routeItems(), el('li', { class: 'legend-note', text: t('legend.war.note') }));
     return;
   }
   root.append(
@@ -82,6 +87,7 @@ export function renderLegend(root, mode, { selected = false } = {}) {
     item(sw('E'), 'legend.E'), item(sw('R'), 'legend.R'), item(sw('T'), 'legend.T'), item(sw('N'), 'legend.N'),
     item(el('span', { class: 'swatch line', 'aria-hidden': 'true' }), 'legend.changed'),
     item(el('span', { class: 'swatch nodata', 'aria-hidden': 'true' }), 'legend.nodata'),
+    ...routeItems(),
   );
 }
 
@@ -213,7 +219,8 @@ function refs(ids, srcIndex, did) {
 
 // ---------------------------------------------------------------- карточка страны
 export function renderCountryCard(card, ctx) {
-  const { title, unitName, T, mode, summary, wars, warsState, diplo, actors, onOpenDispute, onOpenConflict, onCountry, onClose, gwName, isoName } = ctx;
+  const { title, unitName, T, mode, summary, wars, warsState, diplo, actors, onOpenDispute, onOpenConflict, onCountry, onClose, gwName, isoName,
+    routes = [], onOpenRoute } = ctx;
   const lang = getLang();
   const sections = [];
 
@@ -274,6 +281,16 @@ export function renderCountryCard(card, ctx) {
   }
 
   if (mode === 'wars') sections.push(warsSec, disputesSec); else sections.push(disputesSec, warsSec);
+  if (routes.length) {
+    sections.push(el('section', { class: 'sec' }, el('h3', {}, icon('route'), t('actor.routes')),
+      el('ul', { class: 'rows' }, routes.map(({ r, role }) => el('li', {},
+        el('button', { type: 'button', class: 'row-link', onclick: () => onOpenRoute(r.id) },
+          el('span', { class: 'route-dot', style: `background:${r.color}`, 'aria-hidden': 'true' }),
+          el('span', { class: 'row-title', text: tx(r.name) }),
+          el('span', { class: 'chips' }, el('span', { class: 'role-chip', text: t(`actor.route.${role}`) }),
+            el('span', { class: 'role-chip', text: t(`route.status.${routeStatus(r, T.ref)}`) })),
+          icon('chevron', 'row-chev')))))));
+  }
   if (diploSec) sections.push(diploSec);
 
   fill(card,
@@ -314,6 +331,96 @@ export function renderRefCard(card, { p, T, onClose }) {
         sov ? [t('ref.sov'), sov] : null,
       ]),
       el('p', { class: 'small muted', text: t('ref.why') })));
+  card.hidden = false;
+}
+
+// ---------------------------------------------------------------- карточка транспортного маршрута
+export function renderRouteCard(card, { r, T, actors, nodes, through, onClose, onActor }) {
+  const lang = getLang();
+  const did = `route-${r.id}`;
+  const srcIndex = new Map(r.sources.map((s, i) => [s.id, i + 1]));
+  const st = routeStatus(r, T.ref);
+  const actorLink = (code) => el('button', { type: 'button', class: 'linklike', onclick: () => onActor(code), text: actorName(code, actors) });
+  const nodeName = (id) => (nodes[id] ? (lang === 'ru' ? nodes[id].ru : nodes[id].en) : null);
+
+  const badges = el('div', { class: 'badges' },
+    el('span', { class: `badge${st === 'operating' ? ' live' : st === 'none' ? '' : ' plan'}`, text: t(`route.status.${st}`) }),
+    el('span', { class: `badge${r.confidence === 'low' ? ' warn' : ''}`, text: t(`conf.${r.confidence}`) }),
+    r.needs_human_review ? el('span', { class: 'badge warn', text: t('badge.review') }) : null);
+
+  // ветви: цепочки узлов, недостроенные участки помечены
+  const branches = el('ul', { class: 'plain route-branches' }, r.branches.map((b) => el('li', {},
+    el('strong', { text: tx(b.name) }),
+    el('div', { class: 'small' }, b.segments.map((seg, i) => {
+      const names = seg.nodes.map(nodeName).filter(Boolean);
+      const op = segmentOperating(r, seg, T.ref);
+      const notYet = T.ref < (dint(seg.appear) || dint(r.appear));
+      return el('div', { class: `seg${seg.planned ? ' planned' : ''}` },
+        el('span', { class: 'seg-line', style: `border-color:${r.color}`, 'data-op': op ? '1' : '0', 'aria-hidden': 'true' }),
+        names.join(' – '),
+        seg.mode === 'sea' ? el('span', { class: 'muted', text: ` · ${t('route.sea')}` }) : null,
+        seg.planned ? el('span', { class: 'badge warn', text: t('route.seg.planned') }) : (st === 'partial' && !op && !notYet ? el('span', { class: 'badge plan', text: t('route.seg.notyet') }) : null),
+        seg.note ? el('div', { class: 'muted', text: tx(seg.note) }) : null);
+    })),
+    b.note ? el('div', { class: 'small muted', text: tx(b.note) }) : null)));
+
+  const parties = r.parties.length ? el('p', {}, r.parties.map((c, i) => [i ? ', ' : '', actorLink(c)])) : null;
+  const thr = (through || []).filter((c) => !r.parties.includes(c));
+  const overview = [
+    el('p', { class: 'lead', text: tx(r.summary) }),
+    el('h3', { text: t('route.now') }), el('p', { text: tx(r.status) }),
+    parties ? [el('h3', { text: t('route.parties') }), parties] : null,
+    thr.length ? [el('h3', { text: t('route.through') }), el('p', {}, thr.map((c, i) => [i ? ', ' : '', actorLink(c)]))] : null,
+    el('h3', { text: t('route.branches') }), branches,
+    el('p', { class: 'small muted', text: t('route.geom') }),
+  ];
+
+  // загрузка: пропускная способность и ряды по годам
+  const caps = r.capacity.length
+    ? el('ul', { class: 'plain caps' }, r.capacity.map((c) => el('li', {},
+        el('span', { class: 'role-chip', text: t(`route.cap.${c.kind}`) }), ' ', tx(c.text), ' ', refs(c.source_ids, srcIndex, did))))
+    : el('p', { class: 'muted', text: t('route.nocapacity') });
+  const series = r.volumes.length ? r.volumes.map((sr) => {
+    const max = Math.max(...sr.points.map((p) => p.value)) || 1;
+    return el('figure', { class: 'vol' },
+      el('figcaption', {}, el('strong', { text: tx(sr.label) }), el('span', { class: 'muted', text: ` · ${tx(sr.unit)}` })),
+      el('ul', { class: 'bars' }, sr.points.map((p) => {
+        const later = p.year > T.y;
+        return el('li', { class: later ? 'later' : (p.year === T.y ? 'now' : null), title: later ? t('route.later') : null },
+          el('span', { class: 'bar-year', text: String(p.year) }),
+          el('span', { class: 'bar-track' }, el('span', { class: 'bar-fill', style: `width:${Math.max(2, (p.value / max) * 100)}%;background:${r.color}` })),
+          el('span', { class: 'bar-val', text: p.value.toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-GB', { maximumFractionDigits: 3 }) }),
+          el('span', { class: 'bar-src' }, refs(p.source_ids, srcIndex, did), p.source_ids.length < 2 ? el('span', { class: 'badge warn', text: t('route.single') }) : null));
+      })),
+      sr.note ? el('p', { class: 'small muted', text: tx(sr.note) }) : null);
+  }) : [el('p', { class: 'muted', text: t('route.novolumes') })];
+  const load = [el('h3', { text: t('route.capacity') }), caps, el('h3', { text: t('route.volumes') }), ...series];
+
+  const history = r.history.length
+    ? el('ol', { class: 'history' }, r.history.map((h) => el('li', { class: `h-${h.kind || 'event'}${dint(h.date) > T.ref ? ' later' : ''}` },
+        el('time', { text: formatDate(h.date, lang) }), el('p', {}, tx(h.text), ' ', refs(h.source_ids, srcIndex, did)))))
+    : el('p', { class: 'muted', text: t('card.history.none') });
+
+  const sources = el('ol', { class: 'sources' }, r.sources.map((s) => el('li', { id: `src-${did}-${s.id}` },
+    s.url ? el('a', { href: s.url, target: '_blank', rel: 'noopener noreferrer', text: s.title }) : el('span', { text: s.title }),
+    el('span', { class: 'src-meta', text: ` — ${sourceLabel(s)}; ${s.type}${s.page_or_article ? '; ' + s.page_or_article : ''}${s.note ? '; ' + s.note : ''}; ${s.verified_fulltext ? t('card.verified') : t('card.notverified')}` }))));
+  const review = (r.review.conflicts.length || r.review.notes.length)
+    ? el('details', { class: 'more review' }, el('summary', { text: t('card.review') }),
+        el('ul', {}, [...r.review.conflicts, ...r.review.notes].map((x) => el('li', { class: 'small', text: x }))))
+    : null;
+
+  fill(card,
+    cardHead({ eyebrow: t('route.eyebrow'), title: tx(r.name), sub: t('actor.asof', { date: formatMonth(T, lang) }), onClose, extra: badges }),
+    kv(r.operate && r.operate === r.appear
+      ? [[t('route.since'), formatDate(r.operate, lang)]]
+      : [[t('route.appear'), formatDate(r.appear, lang)],
+         [t('route.operate'), r.operate ? formatDate(r.operate, lang) : t(st === 'partial' ? 'route.operate.partial' : 'route.operate.none')]]),
+    ...tabs(did, [
+      { key: 'overview', label: t('card.tab.overview'), body: overview },
+      { key: 'load', label: t('route.tab.load'), body: load },
+      { key: 'history', label: t('card.tab.history'), body: history },
+      { key: 'sources', label: t('card.tab.sources', { n: r.sources.length }), body: [sources, review] },
+    ]));
   card.hidden = false;
 }
 

@@ -96,7 +96,8 @@ export function createMap(container, handlers) {
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
 
   const state = { mode: 'disputes', visible: [], changed: [], roles: new Map(), warRoles: new Map(), actor: null, unitId: null, warGw: null,
-    selected: null, hoverDispute: null, labels: true, lang: 'ru', ref: 0, landHover: null, landSelected: null };
+    selected: null, hoverDispute: null, labels: true, lang: 'ru', ref: 0, landHover: null, landSelected: null,
+    routes: false, routeHover: null, routeSelected: null };
   const ready = new Promise((resolve) => map.on('load', resolve));
 
   function addPatterns() {
@@ -169,6 +170,20 @@ export function createMap(container, handlers) {
     map.addLayer({ id: 'disputes-changed', type: 'line', source: 'disputes', filter: ['in', ['get', 'area_id'], ['literal', []]], paint: { 'line-color': c.select, 'line-width': 1.6, 'line-dasharray': [2, 2] } });
     map.addLayer({ id: 'disputes-hover', type: 'line', source: 'disputes', filter: ['==', ['get', 'dispute_id'], NONE], paint: { 'line-color': c.select, 'line-width': 1.6 } });
     map.addLayer({ id: 'disputes-selected', type: 'line', source: 'disputes', filter: ['==', ['get', 'dispute_id'], NONE], paint: { 'line-color': c.select, 'line-width': 3 } });
+    // транспортные маршруты: подложка-обводка, пунктир (объявлен), сплошная (действует), подсветка, невидимая зона наведения
+    map.addSource('routes', { type: 'geojson', data: empty });
+    const off = ['match', ['get', 'r'], 'traceca', -2.2, 'middle', 2.2, 0];
+    const vis = { visibility: 'none' };
+    map.addLayer({ id: 'routes-casing', type: 'line', source: 'routes', layout: { ...vis, 'line-cap': 'round', 'line-join': 'round' },
+      paint: { 'line-color': c.labelHalo, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 3.6, 6, 6], 'line-opacity': 0.85, 'line-offset': off } });
+    map.addLayer({ id: 'routes-sel', type: 'line', source: 'routes', layout: { ...vis, 'line-cap': 'round', 'line-join': 'round' }, filter: ['==', ['get', 'r'], NONE],
+      paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 7, 6, 11], 'line-opacity': 0.28, 'line-offset': off } });
+    map.addLayer({ id: 'routes-planned', type: 'line', source: 'routes', layout: { ...vis, 'line-join': 'round' },
+      paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 1.8, 6, 3], 'line-dasharray': [2.2, 1.6], 'line-offset': off } });
+    map.addLayer({ id: 'routes-operating', type: 'line', source: 'routes', layout: { ...vis, 'line-cap': 'round', 'line-join': 'round' },
+      paint: { 'line-color': ['get', 'c'], 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 2.2, 6, 3.6], 'line-offset': off } });
+    map.addLayer({ id: 'routes-hit', type: 'line', source: 'routes', layout: vis,
+      paint: { 'line-color': '#000', 'line-width': 14, 'line-opacity': 0, 'line-offset': off } });
     map.addLayer({
       id: 'labels', type: 'symbol', source: 'labels',
       filter: ['==', ['get', 'k'], -1],
@@ -215,6 +230,36 @@ export function createMap(container, handlers) {
     map.setFilter('countries-war', f);
     applyLabelFilter();
     applyActor();
+    applyRoutes();
+  }
+
+  // ---------------------------------------------------------------- маршруты
+  function setRoutesData(geo) { state.routesGeo = geo; map.getSource('routes')?.setData(geo); applyRoutes(); }
+  function setRoutesVisible(on) { state.routes = !!on; applyRoutes(); }
+  function applyRoutes() {
+    if (!map.getLayer('routes-hit')) return;
+    const v = state.routes ? 'visible' : 'none';
+    const ref = state.ref;
+    const shown = ['<=', ['get', 's'], ref];
+    for (const id of ['routes-casing', 'routes-sel', 'routes-planned', 'routes-operating', 'routes-hit']) map.setLayoutProperty(id, 'visibility', v);
+    map.setFilter('routes-casing', shown);
+    map.setFilter('routes-hit', shown);
+    map.setFilter('routes-planned', ['all', shown, ['>', ['get', 'o'], ref]]);
+    map.setFilter('routes-operating', ['all', shown, ['<=', ['get', 'o'], ref]]);
+    const ids = [state.routeHover, state.routeSelected].filter(Boolean);
+    map.setFilter('routes-sel', ids.length ? ['all', shown, ['in', ['get', 'r'], ['literal', ids]]] : ['==', ['get', 'r'], NONE]);
+  }
+  function setRouteHover(id) { if (state.routeHover !== id) { state.routeHover = id || null; applyRoutes(); } }
+  function setRouteSelected(id) { state.routeSelected = id || null; applyRoutes(); }
+  function flyToRoute(id) {
+    const fs = (state.routesGeo?.features || []).filter((f) => f.properties.r === id);
+    if (!fs.length) return;
+    let pts = fs.flatMap((f) => f.geometry.coordinates);
+    // маршрут через 180-й меридиан (СМП): рамку строим по восточному полушарию
+    if (pts.some((p) => p[0] > 150) && pts.some((p) => p[0] < -150)) pts = pts.filter((p) => p[0] > 0);
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    map.fitBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]], { padding: fitPadding(), maxZoom: 6, duration: reduce ? 0 : 900 });
   }
 
   function setLabels(on, lang) { state.labels = on; state.lang = lang || state.lang; applyLabelFilter(); }
@@ -288,6 +333,7 @@ export function createMap(container, handlers) {
     for (const id of ['disputes-changed', 'disputes-hover', 'disputes-selected']) map.setPaintProperty(id, 'line-color', c.select);
     map.setPaintProperty('disputes-line', 'line-color', c.neutral);
     map.setPaintProperty('land-hl', 'line-color', c.select);
+    map.setPaintProperty('routes-casing', 'line-color', c.labelHalo);
     map.setPaintProperty('labels', 'text-color', c.label);
     map.setPaintProperty('labels', 'text-halo-color', c.labelHalo);
     applyActor();
@@ -300,6 +346,10 @@ export function createMap(container, handlers) {
   }
 
   function pick(point) {
+    if (state.routes && map.getLayer('routes-hit')) {
+      const r = map.queryRenderedFeatures(point, { layers: ['routes-hit'] });
+      if (r.length) return { kind: 'route', props: r[0].properties };
+    }
     const layers = state.mode === 'wars' ? ['countries-fill', 'land'] : ['disputes-fill', 'countries-fill', 'land'];
     const fs = map.queryRenderedFeatures(point, { layers });
     const d = fs.find((f) => f.layer.id === 'disputes-fill');
@@ -344,5 +394,5 @@ export function createMap(container, handlers) {
   }
 
   return { map, init, setCountries, setRef, setVisible, setActor, setWarRoles, setSelected, setHoverDispute, refreshTheme, flyToFeatureBounds, setMode, setLabels,
-    setLandHover, setLandSelected, landUncovered };
+    setLandHover, setLandSelected, landUncovered, setRoutesData, setRoutesVisible, setRouteHover, setRouteSelected, flyToRoute };
 }

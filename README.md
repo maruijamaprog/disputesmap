@@ -12,6 +12,7 @@
 | 3.1 | Помесячная шкала, подписи стран, темы и цвет карты, история конфликта, дипотношения, режим «Военные конфликты» | ✅ |
 | 4 | Остальные споры партиями по 10–15 | партия 2 (10 споров) ✅; партия 3 (15 споров) ✅ ждёт подтверждения (разделы 16–19 отчёта); партия 4 ⏳ |
 | 5 | Инструкция по публикации | ✅ `docs/PUBLISHING.md` (GitHub Pages из ветки main, без Actions) |
+| 6 | Слой «Транспортные маршруты»: СМП, TRACECA, МТК «Север – Юг», Средний коридор, IMEC, TRIPP | ✅ ждёт подтверждения (раздел 20 отчёта) |
 
 ## Как посмотреть сайт на своём компьютере
 
@@ -58,6 +59,7 @@ disputes-map/
 │   ├── build_site_data.py    data/disputes.json → site/data/
 │   ├── build_wars.py         UCDP + COW + wars_manual.json → site/data/wars.json
 │   ├── build_diplomacy.py    diplomacy_curated.json → site/data/diplomacy.json
+│   ├── build_routes.py       data/routes.json → site/data/routes.json (транспортные маршруты, проверка линий)
 │   ├── check_data.py         проверка записей: схема, два источника, позиции сторон, лексика
 │   ├── data/                 скрипты партий: batch2*.py, batch3*.py, history_batch1.py
 │   └── geometry_sources.json откуда берётся полигон каждой зоны спора
@@ -75,6 +77,8 @@ python scripts\build_geodata.py --raw raw --out site\data --disputes data\disput
 python scripts\build_site_data.py
 python scripts\build_wars.py --raw raw --out site\data --manual data\wars_manual.json
 python scripts\build_diplomacy.py --raw raw --out site\data
+python scripts\data\routes_data.py data\routes.json
+python scripts\build_routes.py --raw raw --out site\data
 python scripts\check_data.py . check.json
 ```
 
