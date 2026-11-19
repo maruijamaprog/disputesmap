@@ -1086,7 +1086,9 @@
      "Линия — схема по проливам и портам; координаты узлов приблизительные"
     ]
    },
-   "analysis": null
+   "analysis": null,
+   "bottlenecks": [],
+   "footnotes": true
   },
   {
    "id": "traceca",
@@ -1248,8 +1250,100 @@
      }
     }
    ],
-   "capacity": [],
-   "volumes": [],
+   "capacity": [
+    {
+     "kind": "target",
+     "text": {
+      "ru": "По словам генерального секретаря TRACECA Асета Асавбаева, страны маршрута приняли план довести пропускную способность транскаспийского направления до 10 млн т в год в 2025–2026 гг. За 10 месяцев 2024 г. через Каспий перевезено более 6,4 млн т; на год он ожидал 7–7,5 млн т.",
+      "en": "According to TRACECA Secretary General Aset Asavbayev, the route's countries adopted a plan to raise the capacity of the trans-Caspian route to 10 million t a year in 2025–2026. Over 6.4 million t crossed the Caspian in the first 10 months of 2024; he expected 7–7.5 million t for the year."
+     },
+     "source_ids": [
+      "reportaz-asavbaev"
+     ]
+    },
+    {
+     "kind": "design",
+     "text": {
+      "ru": "Порт Баку (Алят): контейнерная мощность увеличена со 100 до 150 тыс. ДФЭ в год, следующее расширение — до 260 тыс. ДФЭ; вторая очередь — до 500 тыс. ДФЭ и 25 млн т грузов в год (первая очередь, 2018 г., — 15 млн т).",
+      "en": "Port of Baku (Alat): container capacity has been raised from 100,000 to 150,000 TEU a year, with the next expansion to 260,000 TEU; the second phase allows up to 500,000 TEU and 25 million t a year (the first phase, 2018, handles 15 million t)."
+     },
+     "source_ids": [
+      "trend-2026-port",
+      "checkpoint-2026",
+      "caspiannews-2020"
+     ]
+    },
+    {
+     "kind": "current",
+     "text": {
+      "ru": "Казахстан: в Актау работает контейнерный хаб на 140 тыс. ДФЭ, построенный вместе с китайским портом Ляньюньган; расширение до 240 тыс. ДФЭ запланировано на 2027–2028 гг. В октябре 2026 г. подписан меморандум о строительстве порта в Курыке стоимостью 1 млрд долл.",
+      "en": "Kazakhstan: a 140,000-TEU container hub built with China's Lianyungang port operates at Aktau; expansion to 240,000 TEU is planned for 2027–2028. In October 2026 a memorandum was signed to build a $1 billion port at Kuryk."
+     },
+     "source_ids": [
+      "checkpoint-2026",
+      "astanatimes-2026"
+     ]
+    },
+    {
+     "kind": "estimate",
+     "text": {
+      "ru": "Концепция развития контейнерных перевозок TRACECA до 2030 г.: коридор может привлечь от 290 до 780 тыс. ДФЭ в год (в разделе прогноза — 760 тыс. ДФЭ), то есть до 9 тыс. контейнерных поездов в год в сообщении Европа – Азия – Европа.",
+      "en": "TRACECA's Concept for Container Transport up to 2030: the corridor could attract 290,000–780,000 TEU a year (760,000 TEU in the forecast section), i.e. up to 9,000 container trains a year on Europe–Asia–Europe services."
+     },
+     "source_ids": [
+      "traceca-concept-2030"
+     ]
+    }
+   ],
+   "volumes": [
+    {
+     "id": "total",
+     "label": {
+      "ru": "Перевозки по маршрутам TRACECA (оценка Секретариата)",
+      "en": "Freight on TRACECA routes (Secretariat estimate)"
+     },
+     "unit": {
+      "ru": "млн т",
+      "en": "million t"
+     },
+     "points": [
+      {
+       "year": 2021,
+       "value": 26.8,
+       "source_ids": [
+        "traceca-stat-2022"
+       ]
+      },
+      {
+       "year": 2022,
+       "value": 18.7,
+       "source_ids": [
+        "traceca-stat-2022",
+        "traceca-stat-2023"
+       ]
+      },
+      {
+       "year": 2023,
+       "value": 17.9,
+       "source_ids": [
+        "traceca-stat-2023",
+        "traceca-stat-2024"
+       ]
+      },
+      {
+       "year": 2024,
+       "value": 17.0,
+       "source_ids": [
+        "traceca-stat-2024"
+       ]
+      }
+     ],
+     "note": {
+      "ru": "Оценки по неполным данным стран-участниц; годы несопоставимы. Данные за 2024 г. не прислали Иран, Казахстан, Туркменистан и Узбекистан, оценка построена по восьми странам. Секретариат сам предупреждает, что сравнивать годы трудно.",
+      "en": "Estimates based on incomplete data from member states; years are not comparable. Iran, Kazakhstan, Turkmenistan and Uzbekistan did not report for 2024, so the estimate covers eight countries. The Secretariat itself warns that comparing years is difficult."
+     }
+    }
+   ],
    "history": [
     {
      "date": "1993-05",
@@ -1380,6 +1474,225 @@
      "accessed": "2026-11-19",
      "language": null,
      "note": "22 октября 2014 г."
+    },
+    {
+     "id": "traceca-stat-2022",
+     "title": "Report on freight traffic statistics along the routes of TRACECA corridor for 2022 (Appendix 11)",
+     "author": "Постоянный секретариат МПК TRACECA",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/fileadmin/fm-dam/pdfs/til_igcmeets/17th/eng/Appendix_11_TRACECA_Statistics_Report_2022_eng.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Материалы 17-го заседания МПК; дата выпуска не указана"
+    },
+    {
+     "id": "traceca-stat-2023",
+     "title": "Report on freight traffic statistics along the routes of the TRACECA corridor for 2023 (Appendix 12)",
+     "author": "Постоянный секретариат МПК TRACECA",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/fileadmin/fm-dam/pdfs/til_igcmeets/17th/eng/Appendix_12_TRACECA_Statistics_Report_2023_eng.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Материалы 17-го заседания МПК; дата выпуска не указана"
+    },
+    {
+     "id": "traceca-stat-2024",
+     "title": "Report on freight traffic statistics along the routes of the TRACECA corridor for 2024 (Appendix 10)",
+     "author": "Постоянный секретариат МПК TRACECA",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/fileadmin/fm-dam/pdfs/til_igcmeets/18th/eng/12_Report_on_freight_traffic_statistics_for_2024_eng.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Материалы 18-го заседания МПК; дата выпуска не указана"
+    },
+    {
+     "id": "reportaz-asavbaev",
+     "title": "Асет Асавбаев: объём грузоперевозок по TRACECA в 2024 году составит 7–7,5 млн тонн",
+     "author": "Report.az",
+     "year": 2024,
+     "type": "публикация СМИ",
+     "url": "https://report.az/ru/cop29/aset-asavbaev-obem-gruzoperevozok-po-traceca-v-2024-godu-sostavit-7-7-5-mln-tonn",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "capacity",
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Интервью генерального секретаря Постоянного секретариата МПК TRACECA; дата на странице не указана (данные за 10 месяцев 2024 г.); название по адресу страницы"
+    },
+    {
+     "id": "traceca-concept-2030",
+     "title": "Concept for the Development of Container Transport in TRACECA Countries up to 2030 (Appendix 11)",
+     "author": "Постоянный секретариат МПК TRACECA",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/fileadmin/fm-dam/pdfs/til_igcmeets/15th/eng/Appendix_11_Concept_2030_eng.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Материалы 15-го заседания МПК; дата принятия в тексте не указана"
+    },
+    {
+     "id": "traceca-checkpoints",
+     "title": "Методика оценки контрольных пунктов пропуска (Приложение 7)",
+     "author": "Постоянный секретариат МПК TRACECA",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/fileadmin/fm-dam/pdfs/til_igcmeets/16th/docs/rus/Appendix_7_Methodology%20on%20evaluating%20check%20ponts_rus.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": "ru",
+     "note": "Материалы 16-го заседания МПК; год в тексте не указан"
+    },
+    {
+     "id": "traceca-digital-2026",
+     "title": "Повышение связности коридоров посредством цифровизации: инструменты и инициативы ТРАСЕКА",
+     "author": "Постоянный секретариат МПК TRACECA (В. Пономаренко)",
+     "year": 2026,
+     "type": "официальный документ стороны",
+     "url": "https://carecprogram.org/uploads/S3-TRACECA_Digitalization_June_2026_RU.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": "ru",
+     "note": "23-е заседание Координационного комитета по транспортному сектору ЦАРЭС, 8–9 июня 2026 г."
+    },
+    {
+     "id": "caspiannews-2020",
+     "title": "Azerbaijan increases its contribution to international transport corridor",
+     "author": "Caspian News",
+     "year": 2020,
+     "type": "публикация СМИ",
+     "url": "https://caspiannews.com/news-detail/azerbaijan-increases-its-contribution-to-international-transport-corridor-2020-2-27-53/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "27 февраля 2020 г.; название по адресу страницы"
+    },
+    {
+     "id": "trend-2026-port",
+     "title": "Baku Port plans to expand container and general cargo capacity",
+     "author": "Trend",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://www.trend.az/business/4231752.html",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "6 октября 2026 г.; слова Худаяра Гасанлы, советника директора Бакинского международного морского торгового порта"
+    },
+    {
+     "id": "checkpoint-2026",
+     "title": "Бум контейнерных перевозок по «Среднему коридору» дает импульс Азербайджану и Грузии на фоне перспектив развития армянского маршрута",
+     "author": "bne IntelliNews (Бен Арис; перевод check-point.kz)",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://check-point.kz/publication?id=11346",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": "ru",
+     "note": "19 ноября 2026 г."
+    },
+    {
+     "id": "ew-wb-2023",
+     "title": "Middle Trade and Transport Corridor: Policies and Investments to Triple Freight Volumes and Halve Travel Time by 2030",
+     "author": "Всемирный банк",
+     "year": 2023,
+     "type": "академическая работа",
+     "url": "https://www.developmentaid.org/api/frontend/cms/file/2023/11/Middle-Trade-and-Transport-Corridor-World-Bank-FINAL.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "analysis",
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Ноябрь 2023 г.; прочитана копия PDF, размещённая DevelopmentAid"
+    },
+    {
+     "id": "astanatimes-2026",
+     "title": "Can Middle Corridor Deliver on Its Promise?",
+     "author": "Dana Omirgazy (The Astana Times)",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://astanatimes.com/2026/10/can-middle-corridor-deliver-on-its-promise/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "volumes",
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "12 октября 2026 г.; данные Министерства транспорта Казахстана"
     }
    ],
    "confidence": "low",
@@ -1389,17 +1702,74 @@
     "last_checked": "2026-11-19",
     "conflicts": [
      "Число участников: 14 (сайт TRACECA) или 13 (МИД Армении, где перечислены 12 стран, включая Монголию)",
-     "Дата подписания соглашения Арменией: 9 августа 1998 г. (МИД Армении) — при общей дате подписания 8 сентября 1998 г."
+     "Дата подписания соглашения Арменией: 9 августа 1998 г. (МИД Армении) — при общей дате подписания 8 сентября 1998 г.",
+     "2024 г.: 17,0 млн т по всем маршрутам TRACECA (отчёт Секретариата) и 7–7,5 млн т через Каспий (ожидание генсекретаря) — разный охват",
+     "Порт Алят: «увеличена со 100 до 150 тыс. ДФЭ» (bne IntelliNews) — Trend называет 150 тыс. ДФЭ текущей мощностью; противоречия нет",
+     "Контейнерный потенциал к 2030 г.: 290–780 тыс. ДФЭ (вывод Концепции) или 760 тыс. ДФЭ (раздел прогноза той же Концепции)"
     ],
     "notes": [
-     "Сводной статистики перевозок по коридору и данных о пропускной способности в открытых источниках не найдено",
      "Сплошная линия показана с даты подписания соглашения (1998 г.): коридор опирается на уже действовавшие пути — допущение редакции",
      "Вступление соглашения в силу 23.05.1999 — по одному источнику (МИД Армении)",
      "Линия «Кавказ – Каспий – Центральная Азия» — схема, а не официальный маршрут",
-     "Ветка «Каспий – Казахстан» добавлена как схема, чтобы показать Казахстан; как маршрут TRACECA в источниках не обозначена"
+     "Ветка «Каспий – Казахстан» добавлена как схема, чтобы показать Казахстан; как маршрут TRACECA в источниках не обозначена",
+     "Объёмы перевозок — оценки Секретариата TRACECA по неполным данным стран; Секретариат предупреждает, что годы несопоставимы",
+     "Цифры загрузки и мощностей в основном из документов самой TRACECA — один источник; независимое подтверждение есть для узких мест (Всемирный банк) и мощностей портов",
+     "Презентация TRACECA на сайте ЭСКАТО ООН (6_TRACECA_MMT_.pdf) не открылась; прогноз по контейнерам взят из Концепции TRACECA до 2030 г."
     ]
    },
-   "analysis": "eastwest"
+   "analysis": "eastwest",
+   "bottlenecks": [
+    {
+     "text": {
+      "ru": "Каспийская переправа — давно называемое самым слабым звеном коридора: нерегулярное расписание и нехватка паромов (старые паромы берут 28 вагонов, новые — 52–54).",
+      "en": "The Caspian crossing has long been called the corridor's weakest link: irregular schedules and too few ferries (older ferries take 28 railcars, newer ones 52–54)."
+     },
+     "source_ids": [
+      "traceca-concept-2030",
+      "checkpoint-2026",
+      "ew-wb-2023"
+     ]
+    },
+    {
+     "text": {
+      "ru": "Порты: не хватает железнодорожных контейнерных терминалов, складов класса А и логистических центров; портовые сборы различаются от порта к порту, а тарифы, по оценке Всемирного банка, выше, чем можно ожидать при таких расстояниях.",
+      "en": "Ports: there are too few rail container terminals, class-A warehouses and logistics centres; port dues vary from port to port, and tariffs, according to the World Bank, are higher than the distances would suggest."
+     },
+     "source_ids": [
+      "traceca-concept-2030",
+      "ew-wb-2023"
+     ]
+    },
+    {
+     "text": {
+      "ru": "Железные дороги и границы: на границе Грузии и Турции переоформляется накладная ЦИМ/СМГС, пропускная способность перевала Ахалкалаки на линии Тбилиси – Карс ограничена 36 ДФЭ; Всемирный банк называет задержки на пограничных переходах одним из главных препятствий.",
+      "en": "Rail and borders: the CIM/SMGS consignment note is reissued at the Georgia–Türkiye border, and the Akhalkalaki pass on the Tbilisi–Kars line is limited to 36 TEU; the World Bank names border-crossing delays as a major obstacle."
+     },
+     "source_ids": [
+      "traceca-concept-2030",
+      "ew-wb-2023"
+     ]
+    },
+    {
+     "text": {
+      "ru": "Пункты пропуска TRACECA оценивает по своей методике: соответствует ли пропускная способность полос контроля фактическому потоку, в том числе в часы пик, сколько длится таможенное оформление, внедрены ли электронное транзитное декларирование (eTIR, NCTS) и электронная очередь.",
+      "en": "TRACECA assesses border checkpoints with its own methodology: whether the capacity of control lanes matches actual traffic, including at peak hours, how long customs clearance takes, and whether electronic transit declarations (eTIR, NCTS) and an electronic queue are in place."
+     },
+     "source_ids": [
+      "traceca-checkpoints"
+     ]
+    },
+    {
+     "text": {
+      "ru": "Цифровизация: концепция TRACECA утверждена в 2021 г., план действий рассчитан на 2022–2026 гг. Соглашение о Едином транзитном разрешении TRACECA подписано в Астане 15 мая 2026 г. (в презентации названы Азербайджан, Казахстан, Киргизия, Украина и Узбекистан); меморандум об электронной накладной ЦИМ/СМГС подписан в Баку 22 мая 2023 г.",
+      "en": "Digitalisation: TRACECA's concept was approved in 2021, with an action plan for 2022–2026. The agreement on a Single TRACECA Transit Permit was signed in Astana on 15 May 2026 (the presentation names Azerbaijan, Kazakhstan, Kyrgyzstan, Ukraine and Uzbekistan); a memorandum on the electronic CIM/SMGS consignment note was signed in Baku on 22 May 2023."
+     },
+     "source_ids": [
+      "traceca-digital-2026"
+     ]
+    }
+   ],
+   "footnotes": false
   },
   {
    "id": "instc",
@@ -1952,7 +2322,9 @@
      "Линии — схема через узлы, названные ERAI; координаты приблизительные"
     ]
    },
-   "analysis": null
+   "analysis": null,
+   "bottlenecks": [],
+   "footnotes": true
   },
   {
    "id": "middle",
@@ -2482,7 +2854,9 @@
      "Направление через Турцию и узел Карс — схема"
     ]
    },
-   "analysis": "eastwest"
+   "analysis": "eastwest",
+   "bottlenecks": [],
+   "footnotes": true
   },
   {
    "id": "imec",
@@ -2866,7 +3240,9 @@
      "Морские линии — схема; порты Индии и ОАЭ — по India Sea Trade News (порт Кандла на схеме не показан), узлы в Аравии и Европе — по Middle East Institute"
     ]
    },
-   "analysis": null
+   "analysis": null,
+   "bottlenecks": [],
+   "footnotes": true
   },
   {
    "id": "tripp",
@@ -3087,7 +3463,9 @@
      "Название, используемое в Азербайджане, в карточку не включено: источник не прочитан"
     ]
    },
-   "analysis": null
+   "analysis": null,
+   "bottlenecks": [],
+   "footnotes": true
   }
  ],
  "analyses": {
@@ -3221,13 +3599,25 @@
       },
       {
        "text": {
-        "ru": "Факт 2025 г. считают по-разному: 4,1 млн т (Министерство транспорта Казахстана) или 1,867 млн т (Ассоциация ТМТМ). Сопоставимой статистики нет, а сводных данных по TRACECA в открытых источниках нет вовсе.",
-        "en": "Figures for 2025 differ: 4.1 million t (Kazakhstan's Ministry of Transport) or 1.867 million t (the TITR Association). There are no comparable statistics, and no consolidated TRACECA data in open sources at all."
+        "ru": "Факт 2025 г. по Среднему коридору считают по-разному: 4,1 млн т (Министерство транспорта Казахстана) или 1,867 млн т (Ассоциация ТМТМ). Сопоставимой статистики нет.",
+        "en": "Middle Corridor figures for 2025 differ: 4.1 million t (Kazakhstan's Ministry of Transport) or 1.867 million t (the TITR Association). There are no comparable statistics."
        },
        "source_ids": [
         "astanatimes-2026",
         "bmge-2026"
        ]
+      },
+      {
+       "text": {
+        "ru": "По всем маршрутам TRACECA Секретариат оценивает перевозки в 17,0 млн т за 2024 г. (26,8 млн т в 2021 г.) — по неполным данным стран, годы несопоставимы. Цель — 10 млн т в год через Каспий к 2025–2026 гг.; на 2024 г. генсекретарь TRACECA ожидал там 7–7,5 млн т.",
+        "en": "For all TRACECA routes the Secretariat estimates 17.0 million t in 2024 (26.8 million t in 2021) — from incomplete country data, years not comparable. The goal is 10 million t a year across the Caspian by 2025–2026; for 2024 the TRACECA Secretary General expected 7–7.5 million t there."
+       },
+       "source_ids": [
+        "traceca-stat-2024",
+        "traceca-stat-2022",
+        "reportaz-asavbaev"
+       ],
+       "same_origin": true
       }
      ]
     },
@@ -4068,7 +4458,8 @@
      "page_or_article": null,
      "perspective": "international",
      "supports": [
-      "analysis"
+      "analysis",
+      "capacity"
      ],
      "verified_fulltext": true,
      "accessed": "2026-11-19",
@@ -4434,6 +4825,61 @@
      "accessed": "2026-11-19",
      "language": null,
      "note": "19 июня 2024 г."
+    },
+    {
+     "id": "traceca-stat-2022",
+     "title": "Report on freight traffic statistics along the routes of TRACECA corridor for 2022 (Appendix 11)",
+     "author": "Постоянный секретариат МПК TRACECA",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/fileadmin/fm-dam/pdfs/til_igcmeets/17th/eng/Appendix_11_TRACECA_Statistics_Report_2022_eng.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Материалы 17-го заседания МПК; дата выпуска не указана"
+    },
+    {
+     "id": "traceca-stat-2024",
+     "title": "Report on freight traffic statistics along the routes of the TRACECA corridor for 2024 (Appendix 10)",
+     "author": "Постоянный секретариат МПК TRACECA",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/fileadmin/fm-dam/pdfs/til_igcmeets/18th/eng/12_Report_on_freight_traffic_statistics_for_2024_eng.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Материалы 18-го заседания МПК; дата выпуска не указана"
+    },
+    {
+     "id": "reportaz-asavbaev",
+     "title": "Асет Асавбаев: объём грузоперевозок по TRACECA в 2024 году составит 7–7,5 млн тонн",
+     "author": "Report.az",
+     "year": 2024,
+     "type": "публикация СМИ",
+     "url": "https://report.az/ru/cop29/aset-asavbaev-obem-gruzoperevozok-po-traceca-v-2024-godu-sostavit-7-7-5-mln-tonn",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "capacity",
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Интервью генерального секретаря Постоянного секретариата МПК TRACECA; дата на странице не указана (данные за 10 месяцев 2024 г.); название по адресу страницы"
     },
     {
      "id": "astanatimes-2026",
