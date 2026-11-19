@@ -97,7 +97,7 @@ export function createMap(container, handlers) {
 
   const state = { mode: 'disputes', visible: [], changed: [], roles: new Map(), warRoles: new Map(), actor: null, unitId: null, warGw: null,
     selected: null, hoverDispute: null, labels: true, lang: 'ru', ref: 0, landHover: null, landSelected: null,
-    routes: false, routeHover: null, routeSelected: null };
+    routes: false, routeHover: null, routeSelected: null, routeCountry: null };
   const ready = new Promise((resolve) => map.on('load', resolve));
 
   function addPatterns() {
@@ -164,6 +164,9 @@ export function createMap(container, handlers) {
     map.addLayer({ id: 'countries-hl', type: 'fill', source: 'countries', filter: ['==', ['get', 'a'], NONE], paint: { 'fill-color': c.a, 'fill-opacity': 0.55 } });
     map.addLayer({ id: 'countries-line', type: 'line', source: 'countries', paint: { 'line-color': c.unitBorder, 'line-width': ['interpolate', ['linear'], ['zoom'], 1, 0.4, 6, 1.2] } });
     map.addLayer({ id: 'countries-hl-line', type: 'line', source: 'countries', filter: ['==', ['get', 'a'], NONE], paint: { 'line-color': c.a, 'line-width': 1.8 } });
+    // страна, выбранная в справке «Значение» карточки маршрута
+    map.addLayer({ id: 'route-country', type: 'fill', source: 'countries', filter: ['==', ['get', 'g'], -1], paint: { 'fill-color': c.a, 'fill-opacity': 0.3 } });
+    map.addLayer({ id: 'route-country-line', type: 'line', source: 'countries', filter: ['==', ['get', 'g'], -1], paint: { 'line-color': c.a, 'line-width': 1.8 } });
     map.addLayer({ id: 'land-hl', type: 'line', source: 'land', filter: ['==', ['get', 'k'], -1], paint: { 'line-color': c.select, 'line-width': 1.4, 'line-dasharray': [2, 1.5] } });
     map.addLayer({ id: 'disputes-fill', type: 'fill', source: 'disputes', filter: ['in', ['get', 'area_id'], ['literal', []]], paint: { 'fill-pattern': 'pat-N' } });
     map.addLayer({ id: 'disputes-line', type: 'line', source: 'disputes', filter: ['all', ['==', ['get', 'ol'], 1], ['in', ['get', 'area_id'], ['literal', []]]], paint: { 'line-color': c.neutral, 'line-width': 0.8 } });
@@ -231,6 +234,7 @@ export function createMap(container, handlers) {
     applyLabelFilter();
     applyActor();
     applyRoutes();
+    applyRouteCountry();
   }
 
   // ---------------------------------------------------------------- маршруты
@@ -251,6 +255,16 @@ export function createMap(container, handlers) {
   }
   function setRouteHover(id) { if (state.routeHover !== id) { state.routeHover = id || null; applyRoutes(); } }
   function setRouteSelected(id) { state.routeSelected = id || null; applyRoutes(); }
+  /** gw — код страны (gwcode CShapes): подсветка страны, выбранной в справке «Значение». */
+  function setRouteCountry(gw, color) { state.routeCountry = gw ? { gw, color } : null; applyRouteCountry(); }
+  function applyRouteCountry() {
+    if (!map.getLayer('route-country')) return;
+    const rc = state.routeCountry;
+    const f = rc ? ['all', ['==', ['get', 'g'], rc.gw], ['<=', ['get', 's'], state.ref], ['>=', ['get', 'e'], state.ref]] : ['==', ['get', 'g'], -1];
+    map.setFilter('route-country', f);
+    map.setFilter('route-country-line', f);
+    if (rc?.color) { map.setPaintProperty('route-country', 'fill-color', rc.color); map.setPaintProperty('route-country-line', 'line-color', rc.color); }
+  }
   function flyToRoute(id) {
     const fs = (state.routesGeo?.features || []).filter((f) => f.properties.r === id);
     if (!fs.length) return;
@@ -394,5 +408,5 @@ export function createMap(container, handlers) {
   }
 
   return { map, init, setCountries, setRef, setVisible, setActor, setWarRoles, setSelected, setHoverDispute, refreshTheme, flyToFeatureBounds, setMode, setLabels,
-    setLandHover, setLandSelected, landUncovered, setRoutesData, setRoutesVisible, setRouteHover, setRouteSelected, flyToRoute };
+    setLandHover, setLandSelected, landUncovered, setRoutesData, setRoutesVisible, setRouteHover, setRouteSelected, setRouteCountry, flyToRoute };
 }

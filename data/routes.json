@@ -1085,7 +1085,8 @@
      "Создание Главсевморпути в 1932 г. подтверждено только фрагментом обзора CRREL без выходных данных и в карточку не включено",
      "Линия — схема по проливам и портам; координаты узлов приблизительные"
     ]
-   }
+   },
+   "analysis": null
   },
   {
    "id": "traceca",
@@ -1207,6 +1208,43 @@
      "note": {
       "ru": "Точные маршруты TRACECA в прочитанных источниках не приведены; линия проведена через порты и столицы стран-участниц.",
       "en": "The sources read do not give exact TRACECA routes; the line runs through ports and capitals of member states."
+     }
+    },
+    {
+     "id": "kazakhstan",
+     "name": {
+      "ru": "Каспий – Казахстан (схема)",
+      "en": "Caspian – Kazakhstan (schematic)"
+     },
+     "segments": [
+      {
+       "nodes": [
+        "baku",
+        "w_baku_s",
+        "w_absheron_e",
+        "aktau"
+       ],
+       "mode": "sea",
+       "appear": null,
+       "operate": null,
+       "planned": false,
+       "note": null
+      },
+      {
+       "nodes": [
+        "aktau",
+        "kuryk"
+       ],
+       "mode": "land",
+       "appear": null,
+       "operate": null,
+       "planned": false,
+       "note": null
+      }
+     ],
+     "note": {
+      "ru": "Ветка показывает Казахстан — участника TRACECA. Путь через Каспий к портам Актау и Курык описан Всемирным банком для Среднего коридора; как маршрут TRACECA он в прочитанных источниках не обозначен.",
+      "en": "The branch shows Kazakhstan, a TRACECA member. The route across the Caspian to the ports of Aktau and Kuryk is described by the World Bank for the Middle Corridor; the sources read do not name it as a TRACECA route."
      }
     }
    ],
@@ -1357,9 +1395,11 @@
      "Сводной статистики перевозок по коридору и данных о пропускной способности в открытых источниках не найдено",
      "Сплошная линия показана с даты подписания соглашения (1998 г.): коридор опирается на уже действовавшие пути — допущение редакции",
      "Вступление соглашения в силу 23.05.1999 — по одному источнику (МИД Армении)",
-     "Линия «Кавказ – Каспий – Центральная Азия» — схема, а не официальный маршрут"
+     "Линия «Кавказ – Каспий – Центральная Азия» — схема, а не официальный маршрут",
+     "Ветка «Каспий – Казахстан» добавлена как схема, чтобы показать Казахстан; как маршрут TRACECA в источниках не обозначена"
     ]
-   }
+   },
+   "analysis": "eastwest"
   },
   {
    "id": "instc",
@@ -1911,7 +1951,8 @@
      "Вступление соглашения в силу 16.05.2002 — по одному источнику",
      "Линии — схема через узлы, названные ERAI; координаты приблизительные"
     ]
-   }
+   },
+   "analysis": null
   },
   {
    "id": "middle",
@@ -2070,8 +2111,8 @@
       }
      ],
      "note": {
-      "ru": "Направление через Турцию — схема; дата открытия железной дороги Баку – Тбилиси – Карс не проверялась.",
-      "en": "The route via Türkiye is schematic; the opening date of the Baku–Tbilisi–Kars railway was not checked."
+      "ru": "Направление через Турцию — схема. Железная дорога Баку – Тбилиси – Карс открыта 30 октября 2017 г. (по данным МИД Турции).",
+      "en": "The route via Türkiye is schematic. The Baku–Tbilisi–Kars railway opened on 30 October 2017 (per Türkiye's Foreign Ministry)."
      }
     }
    ],
@@ -2440,7 +2481,8 @@
      "Пропускная способность 6 млн т — по одному источнику",
      "Направление через Турцию и узел Карс — схема"
     ]
-   }
+   },
+   "analysis": "eastwest"
   },
   {
    "id": "imec",
@@ -2823,7 +2865,8 @@
      "ЕС — участник меморандума; на карте закрашиваются только государства",
      "Морские линии — схема; порты Индии и ОАЭ — по India Sea Trade News (порт Кандла на схеме не показан), узлы в Аравии и Европе — по Middle East Institute"
     ]
-   }
+   },
+   "analysis": null
   },
   {
    "id": "tripp",
@@ -3043,7 +3086,1571 @@
      "Перенос начала строительства на 2027 г. — по одному источнику",
      "Название, используемое в Азербайджане, в карточку не включено: источник не прочитан"
     ]
+   },
+   "analysis": null
+  }
+ ],
+ "analyses": {
+  "eastwest": {
+   "id": "eastwest",
+   "title": {
+    "ru": "Значение маршрута",
+    "en": "Significance of the route"
+   },
+   "scope": {
+    "ru": "Справка общая для TRACECA и Среднего коридора: современный путь TRACECA через Каспий совпадает со Средним коридором. Тезисы автора карты проверены по источникам; оценки приписаны их авторам.",
+    "en": "This section is shared by TRACECA and the Middle Corridor: TRACECA's present-day route across the Caspian coincides with the Middle Corridor. The map author's points were checked against sources; assessments are attributed to their authors."
+   },
+   "general": [
+    {
+     "id": "link",
+     "title": {
+      "ru": "TRACECA и Средний коридор",
+      "en": "TRACECA and the Middle Corridor"
+     },
+     "points": [
+      {
+       "text": {
+        "ru": "TRACECA запущена при поддержке ЕС в 1993 г. для развития портов и сухопутной инфраструктуры; основа Среднего коридора (ТМТМ) заложена позже — в 2013 г. в Астане. Аналитики описывают Средний коридор как продолжение того же пути через Кавказ и Каспий, поэтому справка общая для двух маршрутов.",
+        "en": "TRACECA was launched with EU support in 1993 to develop port and land infrastructure; the Middle Corridor (TITR) was founded later, in 2013 in Astana. Analysts describe the Middle Corridor as a continuation of the same route across the Caucasus and the Caspian, so this section is shared by both routes."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-bri-2023"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Генеральный секретарь TRACECA публично оценивает работу портов транскаспийского пути — например, туркменского порта Туркменбаши.",
+        "en": "The TRACECA Secretary General publicly assesses the work of trans-Caspian ports, such as Turkmenistan's port of Turkmenbashi."
+       },
+       "source_ids": [
+        "ew-intellinews-tkm"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "geoecon",
+     "title": {
+      "ru": "Геоэкономика",
+      "en": "Geo-economics"
+     },
+     "points": [
+      {
+       "text": {
+        "ru": "Путь связывает Китай и Центральную Азию с Европой в обход России и не зависит от морских маршрутов через Ближний Восток и вокруг Африки. После 2022 г. санкции осложнили северный путь через Россию, и перевозки через Каспий выросли.",
+        "en": "The route links China and Central Asia with Europe while bypassing Russia and the sea routes via the Middle East and around Africa. After 2022, sanctions complicated the northern route through Russia and traffic across the Caspian grew."
+       },
+       "source_ids": [
+        "ew-oecd-2023",
+        "ew-scmp-2026",
+        "ew-bri-2023"
+       ]
+      },
+      {
+       "text": {
+        "ru": "По времени путь выигрывает у моря: 15–18 дней из Китая в Европу против 45–60 дней по океану (оценка турецкого дипломатического источника); по данным Казахстана, доставка сократилась с 38 до 13–17 дней.",
+        "en": "It is faster than the sea: 15–18 days from China to Europe versus 45–60 days by ocean (a Turkish diplomatic source's estimate); according to Kazakhstan, delivery time has fallen from 38 to 13–17 days."
+       },
+       "source_ids": [
+        "ew-scmp-2026",
+        "astanatimes-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Но объёмы пока малы: по прогнозу Всемирного банка, через Каспий пойдёт около 1% торговли Китая и ЕС; путь уступает северному через Россию по ёмкости и цене.",
+        "en": "But volumes are still small: the World Bank expects the Caspian route to carry about 1% of China–EU trade; it is less capacious and more costly than the northern route via Russia."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-scmp-2026",
+        "ew-merics-2019"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "geopol",
+     "title": {
+      "ru": "Геополитика",
+      "en": "Geopolitics"
+     },
+     "points": [
+      {
+       "text": {
+        "ru": "В развитии коридора одновременно участвуют ЕС (10 млрд евро в рамках Global Gateway), Китай (порты Актау и Баку, консорциум перевозчиков), США (TRIPP) и Турция (железная дорога Карс – Нахичевань).",
+        "en": "The EU (€10 billion under Global Gateway), China (the ports of Aktau and Baku, a carriers' consortium), the US (TRIPP) and Türkiye (the Kars–Nakhchivan railway) are all involved in developing the corridor."
+       },
+       "source_ids": [
+        "ew-ec-2024",
+        "ew-scmp-2026",
+        "astanatimes-2026",
+        "carnegie-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "По оценкам источников, выигрывают прежде всего транзитные страны и внешние игроки, ищущие путь в обход России; транзитная роль России и Ирана снижается. Подробно — по странам ниже.",
+        "en": "According to the sources, the main beneficiaries are the transit countries and external actors seeking a route around Russia, while the transit role of Russia and Iran declines. Details by country are below."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "carnegie-2026",
+        "ew-bri-2023"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "forecast",
+     "title": {
+      "ru": "Прогноз и факт",
+      "en": "Forecast and reality"
+     },
+     "points": [
+      {
+       "text": {
+        "ru": "Всемирный банк (2023): при вложениях в инфраструктуру перевозки через Каспий к 2030 г. утроятся по сравнению с 2021 г. — до 11 млн т.",
+        "en": "World Bank (2023): with infrastructure investment, traffic across the Caspian would triple by 2030 compared with 2021, to 11 million t."
+       },
+       "source_ids": [
+        "ew-wb-2023"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Факт 2025 г. считают по-разному: 4,1 млн т (Министерство транспорта Казахстана) или 1,867 млн т (Ассоциация ТМТМ). Сопоставимой статистики нет, а сводных данных по TRACECA в открытых источниках нет вовсе.",
+        "en": "Figures for 2025 differ: 4.1 million t (Kazakhstan's Ministry of Transport) or 1.867 million t (the TITR Association). There are no comparable statistics, and no consolidated TRACECA data in open sources at all."
+       },
+       "source_ids": [
+        "astanatimes-2026",
+        "bmge-2026"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "risks",
+     "title": {
+      "ru": "Риски",
+      "en": "Risks"
+     },
+     "points": [
+      {
+       "text": {
+        "ru": "Узкие места (Всемирный банк): нехватка судов на Каспии, задержки на границах, высокие тарифы, нет единой координации коридора. ОЭСР добавляет неформальные платежи и нехватку складов в Центральной Азии.",
+        "en": "Bottlenecks (World Bank): a shortage of Caspian vessels, delays at borders, high tariffs and no single corridor management. The OECD adds informal fees and a lack of warehousing in Central Asia."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-oecd-2025"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Политические риски: мирный договор Армении и Азербайджана на весну 2026 г. не подписан, начало строительства TRIPP перенесено, продолжение войны вокруг Ирана может сделать маршрут опасным, полного финансирования нет.",
+        "en": "Political risks: the Armenia–Azerbaijan peace treaty had not been signed as of spring 2026, the start of TRIPP construction has been postponed, a continued war around Iran could make the route dangerous, and full financing is not in place."
+       },
+       "source_ids": [
+        "carnegie-2026",
+        "eurasianet-2026-09"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "summary",
+     "title": {
+      "ru": "Итог по источникам",
+      "en": "Bottom line from the sources"
+     },
+     "points": [
+      {
+       "text": {
+        "ru": "Объёмы пока далеки от прогнозов, а судьба ключевых участков зависит от политических решений — мирного договора, TRIPP, санкций, ситуации вокруг Ирана — не меньше, чем от инфраструктуры.",
+        "en": "Volumes are still far from forecasts, and the fate of key sections depends on political decisions — the peace treaty, TRIPP, sanctions, the situation around Iran — as much as on infrastructure."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "astanatimes-2026",
+        "carnegie-2026"
+       ]
+      }
+     ]
+    }
+   ],
+   "actors": [
+    {
+     "code": "KAZ",
+     "gw": 705,
+     "group": "route",
+     "name": {
+      "ru": "Казахстан",
+      "en": "Kazakhstan"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Грузы между Китаем и Каспийским морем идут через Казахстан; порты Актау и Курык — точка перехода на суда через Каспий к портам Азербайджана.",
+        "en": "Cargo between China and the Caspian Sea crosses Kazakhstan; the ports of Aktau and Kuryk are where it moves onto vessels across the Caspian to Azerbaijan."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "astanatimes-2026",
+        "ew-timesca-2024-uzb"
+       ]
+      },
+      {
+       "text": {
+        "ru": "В Актау построен контейнерный хаб вместе с китайским портом Ляньюньган. Для Казахстана ставка — не только доходы от транзита, но и логистика и производство.",
+        "en": "A container hub has been built at Aktau together with China's Lianyungang port. For Kazakhstan the stakes go beyond transit revenue to logistics and manufacturing."
+       },
+       "source_ids": [
+        "astanatimes-2026",
+        "ew-scmp-2026"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "После 2022 г. санкции осложнили северный путь через Россию, и интерес к сухопутной связи с Европой через Каспий вырос.",
+        "en": "After 2022, sanctions complicated the northern route through Russia and interest in an overland link to Europe across the Caspian grew."
+       },
+       "source_ids": [
+        "ew-oecd-2023",
+        "ew-scmp-2026",
+        "ew-bri-2023"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Пропускная способность ограничена: Министерство транспорта Казахстана оценивает её примерно в 6 млн т в год; Всемирный банк называет узкими местами нехватку судов на Каспии, задержки на границах и высокие тарифы.",
+        "en": "Capacity is limited: Kazakhstan's Ministry of Transport puts it at about 6 million t a year; the World Bank names a shortage of Caspian vessels, border delays and high tariffs as bottlenecks."
+       },
+       "source_ids": [
+        "astanatimes-2026",
+        "ew-wb-2023"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Маршрут зависит от слаженной работы всех стран цепочки: Всемирный банк считает главной проблемой отсутствие единого управления коридором; задержка в одной точке сказывается на всём пути.",
+        "en": "The route depends on all countries along the chain working together: the World Bank sees the lack of single corridor management as the main problem; a delay at one point affects the whole route."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "astanatimes-2026"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": null
+    },
+    {
+     "code": "UZB",
+     "gw": 704,
+     "group": "route",
+     "name": {
+      "ru": "Узбекистан",
+      "en": "Uzbekistan"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "По оценке Всемирного банка, транзит через Каспий в основном обслуживает торговлю Центральной Азии — прежде всего Узбекистана — с Европой.",
+        "en": "According to the World Bank, transit across the Caspian mainly serves trade between Central Asia — above all Uzbekistan — and Europe."
+       },
+       "source_ids": [
+        "ew-wb-2023"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Узбекистан договаривается с Азербайджаном о выходе к Каспию и рынкам Европы: по железной дороге через Туркменистан к порту Туркменбаши или через Казахстан к Актау и Курыку, затем через порт Алят. Соглашения предусматривают цифровые таможенные процедуры.",
+        "en": "Uzbekistan is negotiating with Azerbaijan for access to the Caspian and European markets: by rail via Turkmenistan to the port of Turkmenbashi or via Kazakhstan to Aktau and Kuryk, then through the port of Alyat. The agreements provide for digital customs procedures."
+       },
+       "source_ids": [
+        "ew-timesca-2024-uzb"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Страны Центральной Азии, по оценке ОЭСР, заметно продвинулись в цифровизации таможенных процедур и пограничного контроля.",
+        "en": "According to the OECD, Central Asian countries have made significant progress in digitalising customs procedures and border controls."
+       },
+       "source_ids": [
+        "ew-oecd-2025"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Узбекистан участвует в управлении коридором: генеральный секретарь TRACECA в 2026 г. — заместитель министра транспорта Узбекистана Жасурбек Чориев.",
+        "en": "Uzbekistan takes part in running the corridor: in 2026 the TRACECA Secretary General is Uzbekistan's deputy transport minister, Jasurbek Choriev."
+       },
+       "source_ids": [
+        "ew-intellinews-tkm"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Грузы Узбекистана идут к морю через территорию соседей; на пути через Туркменистан перевозчикам трудно получать визы и разрешения — вице-премьер Узбекистана назвал это существенным барьером.",
+        "en": "Uzbek cargo reaches the sea through neighbouring countries; carriers crossing Turkmenistan struggle to obtain visas and permits, which Uzbekistan's deputy prime minister called a significant barrier."
+       },
+       "source_ids": [
+        "ew-intellinews-tkm",
+        "ew-timesca-2024-uzb"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Общие ограничения для Центральной Азии (ОЭСР): неформальные платежи, нехватка складских мощностей, мало частных инвестиций.",
+        "en": "Common constraints in Central Asia (OECD): informal fees, warehousing bottlenecks and limited private investment."
+       },
+       "source_ids": [
+        "ew-oecd-2025"
+       ]
+      }
+     ],
+     "confidence": "low",
+     "note": null
+    },
+    {
+     "code": "TKM",
+     "gw": 701,
+     "group": "route",
+     "name": {
+      "ru": "Туркменистан",
+      "en": "Turkmenistan"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Порт Туркменбаши (открыт в мае 2018 г.) — альтернатива казахстанским портам для перевозок через Каспий в Азербайджан; в 2025 г. он обработал 7,3 млн т грузов.",
+        "en": "The port of Turkmenbashi (opened in May 2018) is an alternative to Kazakhstan's ports for shipments across the Caspian to Azerbaijan; it handled 7.3 million t in 2025."
+       },
+       "source_ids": [
+        "ew-intellinews-tkm",
+        "ew-timesca-2024-uzb"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Туркменистан входит в число стран Центральной Азии, с которыми ЕС в 2024 г. согласовал развитие Транскаспийского коридора.",
+        "en": "Turkmenistan is among the Central Asian countries with which the EU agreed in 2024 to develop the Trans-Caspian corridor."
+       },
+       "source_ids": [
+        "ew-ec-2024"
+       ]
+      },
+      {
+       "text": {
+        "ru": "По оценке генсекретаря TRACECA, если Туркменистан решит проблемы порта, он сможет сильнее конкурировать с Казахстаном за транскаспийские грузы.",
+        "en": "According to the TRACECA Secretary General, if Turkmenistan solves the port's problems it could compete more strongly with Kazakhstan for trans-Caspian cargo."
+       },
+       "source_ids": [
+        "ew-intellinews-tkm"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Порт загружен примерно на 25–30%: перевозчикам трудно получить визы и разрешения.",
+        "en": "The port runs at about 25–30% of capacity: carriers find it hard to obtain visas and permits."
+       },
+       "source_ids": [
+        "ew-intellinews-tkm"
+       ]
+      }
+     ],
+     "confidence": "low",
+     "note": null
+    },
+    {
+     "code": "AZE",
+     "gw": 373,
+     "group": "route",
+     "name": {
+      "ru": "Азербайджан",
+      "en": "Azerbaijan"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Порт Баку в Аляте принимает грузы с Каспия; дальше они идут по железной дороге в Грузию и Турцию — линия Баку – Тбилиси – Карс открыта 30 октября 2017 г.",
+        "en": "The Port of Baku at Alyat receives cargo from across the Caspian; it then moves by rail to Georgia and Türkiye — the Baku–Tbilisi–Kars line opened on 30 October 2017."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-timesca-2024-uzb",
+        "ew-mfa-tr"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Маршрут через Армению (TRIPP) восстанавливает кратчайшую сухопутную связь основной части Азербайджана с Нахичеванью. В Азербайджане его называют «Зангезурским коридором»; в Армении это название не используют.",
+        "en": "The route through Armenia (TRIPP) restores the shortest overland link between mainland Azerbaijan and Nakhchivan. In Azerbaijan it is called the \"Zangezur corridor\"; Armenians do not use this name."
+       },
+       "source_ids": [
+        "carnegie-2026",
+        "ew-caci-2024",
+        "ew-oc-2023"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Параллельно Азербайджан и Иран 9 октября 2023 г. договорились о дороге и железной дороге в Нахичевань через Иран вдоль Аракса (около 55 км).",
+        "en": "In parallel, on 9 October 2023 Azerbaijan and Iran agreed on a road and railway to Nakhchivan through Iran along the Aras (about 55 km)."
+       },
+       "source_ids": [
+        "ew-caci-2024",
+        "carnegie-2026"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Мирный договор с Арменией на весну 2026 г. был парафирован, но не подписан.",
+        "en": "As of spring 2026 the peace treaty with Armenia had been initialled but not signed."
+       },
+       "source_ids": [
+        "carnegie-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Начало строительства армянского участка TRIPP перенесено — не раньше 2027 г.",
+        "en": "Construction of the Armenian section of TRIPP has been postponed until 2027 at the earliest."
+       },
+       "source_ids": [
+        "eurasianet-2026-09"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": null
+    },
+    {
+     "code": "GEO",
+     "gw": 372,
+     "group": "route",
+     "name": {
+      "ru": "Грузия",
+      "en": "Georgia"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Грузия — звено между Каспием и Чёрным морем: грузы идут по железной дороге к портам Поти и Батуми и дальше через Чёрное море (например, в Констанцу) или через Турцию.",
+        "en": "Georgia links the Caspian and the Black Sea: cargo travels by rail to the ports of Poti and Batumi and on across the Black Sea (for example, to Constanța) or via Türkiye."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-rbj-2019"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Транзит по Среднему коридору через Грузию вырос вдвое с 2018 по 2025 г. — до 4,6 млн т; рост 2025 г. обеспечила в основном региональная торговля, максимум — 5,0 млн т в 2022 г.",
+        "en": "Middle Corridor transit through Georgia doubled between 2018 and 2025 to 4.6 million t; growth in 2025 came mainly from regional trade; the peak was 5.0 million t in 2022."
+       },
+       "source_ids": [
+        "ew-pmc-2026"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Глубоководный порт Анаклия: контракт с грузино-американским консорциумом расторгнут в 2020 г., в 2024 г. подряд получил китайский консорциум, в июле 2026 г. правительство объявило о его выходе и о государственной собственности на порт. Критики считают это попыткой вернуть расположение Запада, сохранив роль в Среднем коридоре.",
+        "en": "Anaklia deep-sea port: the contract with a Georgian–US consortium was cancelled in 2020, a Chinese consortium won the contract in 2024, and in July 2026 the government announced its exit and state ownership of the port. Critics see this as an attempt to regain Western goodwill while keeping a Middle Corridor role."
+       },
+       "source_ids": [
+        "ew-eurasianet-anaklia"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Всемирный банк (2023) рекомендует снизить тарифы на обработку контейнеров в черноморских портах коридора — по его данным, самые высокие на Чёрном море.",
+        "en": "The World Bank (2023) recommends cutting container handling tariffs at the corridor's Black Sea ports, which it says are the highest on the Black Sea."
+       },
+       "source_ids": [
+        "ew-wb-2023"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": null
+    },
+    {
+     "code": "TUR",
+     "gw": 640,
+     "group": "route",
+     "name": {
+      "ru": "Турция",
+      "en": "Türkiye"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Турция продвигает Средний коридор как часть возрождения Шёлкового пути: через её порты азиатские грузы получают выход на Ближний Восток, в Северную Африку и Средиземноморье.",
+        "en": "Türkiye promotes the Middle Corridor as part of reviving the Silk Road: its ports give Asian cargo access to the Middle East, North Africa and the Mediterranean."
+       },
+       "source_ids": [
+        "ew-mfa-tr",
+        "carnegie-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "МИД Турции называет железную дорогу Баку – Тбилиси – Карс (открыта 30 октября 2017 г.) новой возможностью для бесперебойной торговли Китая и Европы.",
+        "en": "Türkiye's Foreign Ministry calls the Baku–Tbilisi–Kars railway (opened 30 October 2017) a new opportunity for uninterrupted China–Europe trade."
+       },
+       "source_ids": [
+        "ew-mfa-tr"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Турция строит двухпутную железную дорогу Карс – Дилуджу (Нахичевань), чтобы через TRIPP напрямую связать Турцию и Азербайджан.",
+        "en": "Türkiye is building a double-track railway from Kars to Dilucu (Nakhchivan) to link Türkiye and Azerbaijan directly via TRIPP."
+       },
+       "source_ids": [
+        "carnegie-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Турция — участник TRACECA, Постоянный секретариат которой находится в Баку.",
+        "en": "Türkiye is a member of TRACECA, whose Permanent Secretariat is in Baku."
+       },
+       "source_ids": [
+        "ew-mfa-tr",
+        "traceca-history"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "По оценке Всемирного банка (2023), из-за неэффективности и пробелов в инфраструктуре на территории Турции операторы пока предпочитают путь через Чёрное море.",
+        "en": "According to the World Bank (2023), inefficiencies and infrastructure gaps in Türkiye mean operators currently prefer the Black Sea route."
+       },
+       "source_ids": [
+        "ew-wb-2023"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": null
+    },
+    {
+     "code": "UKR",
+     "gw": 369,
+     "group": "route",
+     "name": {
+      "ru": "Украина",
+      "en": "Ukraine"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Паромная линия Черноморск – Батуми даёт Украине прямой выход к рынкам Кавказа и Центральной Азии; линия Ильичёвск (Черноморск) – Констанца – Батуми работала как узел TRACECA с 2014 г.",
+        "en": "The Chornomorsk–Batumi ferry gives Ukraine direct access to markets in the Caucasus and Central Asia; the Illichivsk (Chornomorsk) – Constanța – Batumi line has served as a TRACECA hub since 2014."
+       },
+       "source_ids": [
+        "ew-reuters-2024",
+        "traceca-ferry-2014"
+       ]
+      }
+     ],
+     "pol": [],
+     "risks": [
+      {
+       "text": {
+        "ru": "Паромное сообщение остановлено после начала полномасштабного вторжения России в 2022 г. Возобновление объявлено в июне 2024 г.; первые рейсы после перерыва, по данным «Укрзализныци», прошли 18 и 26 марта 2025 г.",
+        "en": "Ferry services stopped after Russia's full-scale invasion in 2022. A restart was announced in June 2024; according to Ukrzaliznytsia, the first sailings after the break took place on 18 and 26 March 2025."
+       },
+       "source_ids": [
+        "ew-reuters-2024",
+        "ew-pravda-2025"
+       ]
+      }
+     ],
+     "confidence": "low",
+     "note": {
+      "ru": "Политическая функция маршрута для Украины в прочитанных источниках не описана.",
+      "en": "The sources read do not describe the route's political role for Ukraine."
+     }
+    },
+    {
+     "code": "ROU",
+     "gw": 360,
+     "group": "route",
+     "name": {
+      "ru": "Румыния",
+      "en": "Romania"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Констанца — один из крупнейших портов Европы (около 88 млн т в 2025 г.); он связывает черноморские линии с внутренними водными путями Центральной и Восточной Европы. В апреле 2026 г. AD Ports Group (ОАЭ) договорилась изучить инвестиции в порт в рамках своей стратегии по Среднему коридору.",
+        "en": "Constanța is one of Europe's largest ports (about 88 million t in 2025); it links Black Sea shipping with the inland waterways of Central and Eastern Europe. In April 2026 AD Ports Group (UAE) agreed to explore investment in the port as part of its Middle Corridor strategy."
+       },
+       "source_ids": [
+        "ew-national-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Морская линия Батуми/Поти – Констанца связывает Средний коридор с Румынией; её оператор называл её «последним недостающим звеном» цепочки. Паромы до Констанцы ходят и по линии TRACECA.",
+        "en": "The Batumi/Poti – Constanța sea link connects the Middle Corridor with Romania; its operator called it \"the last missing link\" in the chain. Ferries to Constanța also run on the TRACECA line."
+       },
+       "source_ids": [
+        "ew-rbj-2019",
+        "traceca-ferry-2014"
+       ]
+      }
+     ],
+     "pol": [],
+     "risks": [],
+     "confidence": "low",
+     "note": {
+      "ru": "Политическая функция и риски для Румынии в прочитанных источниках не описаны.",
+      "en": "The sources read do not describe the political role or risks for Romania."
+     }
+    },
+    {
+     "code": "ARM",
+     "gw": 371,
+     "group": "external",
+     "name": {
+      "ru": "Армения",
+      "en": "Armenia"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Армения рассматривает открытие границ как условие диверсификации экономики и видит себя региональным транспортным узлом (концепция «Перекрёсток мира», 2023 г.). Границы с Турцией и Азербайджаном закрыты с 1990-х годов.",
+        "en": "Armenia sees open borders as essential to diversifying its economy and envisions itself as a regional transport hub (the Crossroads of Peace concept, 2023). Its borders with Türkiye and Azerbaijan have been closed since the 1990s."
+       },
+       "source_ids": [
+        "carnegie-2026",
+        "ew-oc-2023"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Принцип «Перекрёстка мира» — суверенитет и юрисдикция страны над проходящими через неё путями; по рамочному документу США и Армении инфраструктура TRIPP остаётся под суверенитетом Армении.",
+        "en": "The Crossroads of Peace principle is each country's sovereignty and jurisdiction over routes through its territory; under the US–Armenia framework, TRIPP infrastructure remains under Armenian sovereignty."
+       },
+       "source_ids": [
+        "ew-oc-2023",
+        "carnegie-2026",
+        "mfa-am-tripp"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Реализация TRIPP — «большое испытание» для Армении (Carnegie): полное финансирование не обеспечено, инциденты безопасности легко политизируются, оппозиция может попытаться изменить курс правительства.",
+        "en": "Implementing TRIPP is a \"big test\" for Armenia (Carnegie): full financing is not secured, security incidents are easily politicised, and the opposition may try to change the government's course."
+       },
+       "source_ids": [
+        "carnegie-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Начало строительства перенесено — не раньше 2027 г.",
+        "en": "The start of construction has been postponed until 2027 at the earliest."
+       },
+       "source_ids": [
+        "eurasianet-2026-09"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": {
+      "ru": "Армения — участник TRACECA; линия TRACECA на карте через её территорию не проходит. См. также карточку TRIPP.",
+      "en": "Armenia is a TRACECA member; the TRACECA line on the map does not cross its territory. See also the TRIPP card."
+     }
+    },
+    {
+     "code": "IRN",
+     "gw": 630,
+     "group": "external",
+     "name": {
+      "ru": "Иран",
+      "en": "Iran"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Иран опасается потерять роль транзитной страны между основной частью Азербайджана и Нахичеванью; альтернатива для него — согласованный 9 октября 2023 г. маршрут через Иран вдоль Аракса.",
+        "en": "Iran fears losing its role as a transit country between mainland Azerbaijan and Nakhchivan; its alternative is the route through Iran along the Aras agreed on 9 October 2023."
+       },
+       "source_ids": [
+        "carnegie-2026",
+        "ew-caci-2024"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "В августе 2025 г. советник верховного лидера Ирана Али Акбар Велаяти заявил, что Иран заблокирует маршрут «с Россией или без»; МИД Ирана, приветствуя мирное соглашение, призвал развивать проекты у границ Ирана без иностранного вмешательства.",
+        "en": "In August 2025 Ali Akbar Velayati, adviser to Iran's Supreme Leader, said Iran would block the route \"with or without Russia\"; Iran's Foreign Ministry, while welcoming the peace deal, called for projects near Iran's borders to proceed without foreign interference."
+       },
+       "source_ids": [
+        "ew-aljazeera-2025",
+        "carnegie-2026"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Аналитики Carnegie допускают, что Иран может смириться с железной дорогой под юрисдикцией Армении.",
+        "en": "Carnegie analysts suggest Iran could tolerate a railway under Armenian jurisdiction."
+       },
+       "source_ids": [
+        "carnegie-2026"
+       ]
+      }
+     ],
+     "risks": [],
+     "confidence": "medium",
+     "note": {
+      "ru": "Иран — участник TRACECA; линия TRACECA на карте через его территорию не проходит.",
+      "en": "Iran is a TRACECA member; the TRACECA line on the map does not cross its territory."
+     }
+    },
+    {
+     "code": "CHN",
+     "gw": 710,
+     "group": "external",
+     "name": {
+      "ru": "Китай",
+      "en": "China"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Для Китая путь через Каспий — способ диверсифицировать поставки в Европу в обход России и морских «узких мест». Китайские госкомпании вложили в коридор сотни миллионов долларов, в том числе в порты Актау и Баку.",
+        "en": "For China, the Caspian route is a way to diversify shipments to Europe around Russia and maritime chokepoints. Chinese state firms have invested hundreds of millions of dollars in the corridor, including in the ports of Aktau and Baku."
+       },
+       "source_ids": [
+        "ew-scmp-2026",
+        "astanatimes-2026"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Роль Китая выросла: в 2019 г. аналитики MERICS писали, что Китай почти не участвует в коридоре и сомневается в его жизнеспособности; в 2026 г. China Railway Container Transport вошла в консорциум «Средний коридор», а в Актау работает хаб с портом Ляньюньган.",
+        "en": "China's role has grown: in 2019 MERICS analysts wrote that China was largely absent from the corridor and doubted its viability; in 2026 China Railway Container Transport joined the Middle Corridor consortium, and a hub with Lianyungang port operates at Aktau."
+       },
+       "source_ids": [
+        "ew-merics-2019",
+        "astanatimes-2026"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Маршрут уступает пути через Россию по ёмкости и эффективности; по прогнозу Всемирного банка, через Каспий пойдёт лишь около 1% торговли Китая и ЕС.",
+        "en": "The route falls short of the path through Russia in capacity and efficiency; the World Bank expects only about 1% of China–EU trade to go across the Caspian."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-scmp-2026"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": null
+    },
+    {
+     "code": "EU",
+     "gw": null,
+     "group": "external",
+     "name": {
+      "ru": "Европейский союз",
+      "en": "European Union"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "В январе 2024 г. на форуме инвесторов ЕС – Центральная Азия объявлено о вложениях 10 млрд евро в транспорт Центральной Азии (гранты и гарантии Еврокомиссии, ЕИБ, ЕБРР, страны ЕС, частный сектор). Цель — путь между Европой и Центральной Азией через Чёрное море и Кавказ за 15 дней.",
+        "en": "In January 2024 the EU–Central Asia investors forum announced €10 billion for transport in Central Asia (European Commission grants and guarantees, the EIB, the EBRD, EU member states and the private sector). The goal is a 15-day route between Europe and Central Asia via the Black Sea and the Caucasus."
+       },
+       "source_ids": [
+        "ew-ec-2024"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "TRACECA запущена при поддержке ЕС в 1993 г. для развития портов и сухопутной инфраструктуры и задумывалась как путь в обход России и Ирана. После 2022 г. интерес вырос: санкции осложнили северный путь через Россию.",
+        "en": "TRACECA was launched with EU support in 1993 to develop port and land infrastructure and was conceived as a route avoiding Russia and Iran. Interest grew after 2022, when sanctions complicated the northern route through Russia."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-bri-2023",
+        "ew-oecd-2023"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Пока это путь малой ёмкости: Всемирный банк не ожидает, что Средний коридор полностью заменит северный, а его доля в торговле ЕС и Китая останется около 1%.",
+        "en": "For now it is a low-capacity route: the World Bank does not expect the Middle Corridor to fully replace the northern one, and its share of EU–China trade to stay around 1%."
+       },
+       "source_ids": [
+        "ew-wb-2023",
+        "ew-scmp-2026"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": {
+      "ru": "ЕС — не государство, поэтому на карте не подсвечивается.",
+      "en": "The EU is not a state, so it is not highlighted on the map."
+     }
+    },
+    {
+     "code": "USA",
+     "gw": 2,
+     "group": "external",
+     "name": {
+      "ru": "США",
+      "en": "United States"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "По рамочному документу США и Армении (январь 2026 г.) TRIPP строит компания-разработчик: 74% у США, 26% у Армении; права — на 49 лет с возможным продлением на 50 лет.",
+        "en": "Under the US–Armenia framework (January 2026), TRIPP is built by a development company: 74% US, 26% Armenia; rights for 49 years, extendable by 50 years."
+       },
+       "source_ids": [
+        "mfa-am-tripp",
+        "eurasianet-2026-01"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "Маршрут назван в честь президента США; часть стран региона, по оценке Carnegie, приветствует участие США как способ уменьшить влияние России. Иран считает присутствие США у своей границы угрозой.",
+        "en": "The route is named after the US president; according to Carnegie, some countries in the region welcome US involvement as a way to reduce Russian influence. Iran sees a US presence near its border as a threat."
+       },
+       "source_ids": [
+        "carnegie-2026",
+        "ew-aljazeera-2025"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "Полное финансирование TRIPP не обеспечено (Carnegie); строительство в Армении перенесено не раньше 2027 г. (Eurasianet).",
+        "en": "Full financing for TRIPP is not secured (Carnegie); construction in Armenia has been postponed until 2027 at the earliest (Eurasianet)."
+       },
+       "source_ids": [
+        "carnegie-2026",
+        "eurasianet-2026-09"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": null
+    },
+    {
+     "code": "RUS",
+     "gw": 365,
+     "group": "external",
+     "name": {
+      "ru": "Россия",
+      "en": "Russia"
+     },
+     "econ": [
+      {
+       "text": {
+        "ru": "Санкции против перевозок через Россию повысили интерес к пути через Каспий, но, по оценке Всемирного банка, Средний коридор не заменит северный путь полностью.",
+        "en": "Sanctions on shipments through Russia raised interest in the Caspian route, but according to the World Bank the Middle Corridor will not fully replace the northern route."
+       },
+       "source_ids": [
+        "ew-oecd-2023",
+        "ew-wb-2023"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Россия развивает собственный выход на юг — МТК «Север – Юг» (см. карточку маршрута); Минтранс России сообщает о росте перевозок по нему.",
+        "en": "Russia is developing its own southern outlet, the North–South Transport Corridor (see its card); Russia's Ministry of Transport reports growing traffic on it."
+       },
+       "source_ids": [
+        "erai-instc-2025",
+        "mintrans-2026"
+       ]
+      }
+     ],
+     "pol": [
+      {
+       "text": {
+        "ru": "По заявлению лидеров Азербайджана, Армении и России от 10 ноября 2020 г. контроль за транспортным сообщением с Нахичеванью должны были осуществлять пограничники ФСБ России. Рамочный документ TRIPP оставляет пограничный и таможенный контроль за Арменией.",
+        "en": "Under the 10 November 2020 statement by the leaders of Azerbaijan, Armenia and Russia, transport links to Nakhchivan were to be controlled by Russia's FSB Border Guard Service. The TRIPP framework leaves border and customs control with Armenia."
+       },
+       "source_ids": [
+        "ew-trilateral-2020",
+        "carnegie-2026",
+        "mfa-am-tripp"
+       ]
+      },
+      {
+       "text": {
+        "ru": "Оценки в Москве расходились: вице-премьер Алексей Оверчук назвал дорогу вкладом в общий транспортный каркас Евразии, министр иностранных дел Сергей Лавров сомневался в прочности договорённостей.",
+        "en": "Views in Moscow differed: Deputy Prime Minister Alexei Overchuk called the road a contribution to a common Eurasian transport framework, while Foreign Minister Sergei Lavrov doubted the deals would hold."
+       },
+       "source_ids": [
+        "ew-oc-2025-russia"
+       ]
+      }
+     ],
+     "risks": [
+      {
+       "text": {
+        "ru": "По оценке Carnegie, влияние России на Южном Кавказе резко ослабло.",
+        "en": "According to Carnegie, Russia's influence in the South Caucasus has sharply diminished."
+       },
+       "source_ids": [
+        "carnegie-2026"
+       ]
+      }
+     ],
+     "confidence": "medium",
+     "note": null
+    }
+   ],
+   "sources": [
+    {
+     "id": "ew-wb-2023",
+     "title": "Middle Trade and Transport Corridor: Policies and Investments to Triple Freight Volumes and Halve Travel Time by 2030",
+     "author": "Всемирный банк",
+     "year": 2023,
+     "type": "академическая работа",
+     "url": "https://www.developmentaid.org/api/frontend/cms/file/2023/11/Middle-Trade-and-Transport-Corridor-World-Bank-FINAL.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Ноябрь 2023 г.; прочитана копия PDF, размещённая DevelopmentAid"
+    },
+    {
+     "id": "ew-oecd-2023",
+     "title": "Realising the Potential of the Middle Corridor",
+     "author": "ОЭСР",
+     "year": 2023,
+     "type": "академическая работа",
+     "url": "https://www.oecd.org/en/publications/realising-the-potential-of-the-middle-corridor_635ad854-en/full-report.html",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": false,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Прочитано только описание доклада"
+    },
+    {
+     "id": "ew-oecd-2025",
+     "title": "Enhancing the Competitiveness of the Trans-Caspian Transport Corridor in Central Asia",
+     "author": "ОЭСР",
+     "year": null,
+     "type": "академическая работа",
+     "url": "https://www.oecd.org/en/publications/enhancing-the-competitiveness-of-the-trans-caspian-transport-corridor-in-central-asia_f261e7fa-en/full-report/turkmenistan_17b40db7",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": false,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Прочитано только описание доклада; год выпуска на странице не указан"
+    },
+    {
+     "id": "ew-bri-2023",
+     "title": "Middle Corridor: from Western-initiated TRACECA to China's Belt and Road Initiative",
+     "author": "Vusal Guliyev (Baku Research Institute)",
+     "year": 2023,
+     "type": "академическая работа",
+     "url": "https://bakuresearchinstitute.org/en/middle-corridor-from-western-initiated-traceca-to-chinas-belt-and-road-initiative/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "11 сентября 2023 г."
+    },
+    {
+     "id": "ew-ec-2024",
+     "title": "Global Gateway: EU and Central Asian countries agree building blocks to develop Trans-Caspian transport corridor",
+     "author": "Европейская комиссия",
+     "year": 2024,
+     "type": "официальный документ стороны",
+     "url": "https://international-partnerships.ec.europa.eu/news-and-events/news/global-gateway-eu-and-central-asian-countries-agree-building-blocks-develop-trans-caspian-transport-2024-01-30_en",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "EU",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "30 января 2024 г.; название по адресу страницы"
+    },
+    {
+     "id": "ew-scmp-2026",
+     "title": "Alternate Route: China Invests in Europe Cargo Corridor That Avoids Russia, Middle East",
+     "author": "Ralph Jennings (South China Morning Post; перепечатка Caspian Post)",
+     "year": null,
+     "type": "публикация СМИ",
+     "url": "https://caspianpost.com/regions/alternate-route-china-invests-in-europe-cargo-corridor-that-avoids-russia-middle-east",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "29 июня; год на странице не указан"
+    },
+    {
+     "id": "ew-merics-2019",
+     "title": "On the \"Middle Corridor,\" China is largely absent",
+     "author": "Jacob Mardell (MERICS)",
+     "year": 2019,
+     "type": "академическая работа",
+     "url": "https://merics.org/index%2Ephp/en/comment/middle-corridor-china-largely-absent",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "25 октября 2019 г.; впервые опубликовано в Berlin Policy Journal"
+    },
+    {
+     "id": "ew-timesca-2024-uzb",
+     "title": "Azerbaijan Is Bringing Uzbekistan into the Middle Corridor",
+     "author": "Robert M. Cutler (The Times of Central Asia)",
+     "year": 2024,
+     "type": "публикация СМИ",
+     "url": "https://timesca.com/azerbaijan-is-bringing-uzbekistan-into-the-middle-corridor/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "19 сентября 2024 г."
+    },
+    {
+     "id": "ew-pmc-2026",
+     "title": "Middle Corridor Transit Cargo Flows: Georgia",
+     "author": "PMC Research",
+     "year": 2026,
+     "type": "датасет",
+     "url": "https://research.pmcg-i.com/periodic/15",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "8 сентября 2026 г."
+    },
+    {
+     "id": "ew-eurasianet-anaklia",
+     "title": "China quietly exits Georgian port deal",
+     "author": "Eurasianet",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://eurasianet.org/china-quietly-exits-georgian-port-deal",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "8 июля 2026 г."
+    },
+    {
+     "id": "ew-intellinews-tkm",
+     "title": "Red tape means Turkmenistan's modern Caspian Sea port operating at third of capacity, says Middle Corridor official",
+     "author": "bne IntelliNews",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://www.intellinews.com/red-tape-means-turkmenistan-s-modern-caspian-sea-port-operating-at-third-of-capacity-says-middle-corridor-official-450563/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "24 июня 2026 г.; слова генсекретаря TRACECA Ж. Чориева из интервью Gazeta.uz в пересказе Turkmen News"
+    },
+    {
+     "id": "ew-mfa-tr",
+     "title": "Türkiye's Multilateral Transportation Policy",
+     "author": "МИД Турции",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://mfa.gov.tr/turkiye_s-multilateral-transportation-policy.en.mfa",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "TUR",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Без даты; название по адресу страницы"
+    },
+    {
+     "id": "ew-oc-2023",
+     "title": "Armenia proposes opening regional transport links as part of Crossroads of Peace",
+     "author": "OC Media",
+     "year": 2023,
+     "type": "публикация СМИ",
+     "url": "https://oc-media.org/armenia-proposes-opening-regional-transport-links-as-part-of-crossroads-of-peace",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "27 октября 2023 г.; название по адресу страницы"
+    },
+    {
+     "id": "ew-aljazeera-2025",
+     "title": "Iran rejects planned transit corridor outlined in Armenia-Azerbaijan pact",
+     "author": "Al Jazeera",
+     "year": 2025,
+     "type": "публикация СМИ",
+     "url": "https://aljazeera.com/news/2025/8/9/iran-rejects-planned-transit-corridor-outlined-in-armenia-azerbaijan-pact",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "9 августа 2025 г."
+    },
+    {
+     "id": "ew-caci-2024",
+     "title": "Is the Aras Corridor an Alternative to Zangezur?",
+     "author": "Vali Kaleji (CACI Analyst)",
+     "year": 2024,
+     "type": "академическая работа",
+     "url": "https://www.cacianalyst.org/publications/analytical-articles/item/13788-is-the-aras-corridor-an-alternative-to-zangezur",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "5 февраля 2024 г.; название по адресу страницы"
+    },
+    {
+     "id": "ew-oc-2025-russia",
+     "title": "Russian officials issue contradictory statements on Armenia–Azerbaijan Washington summit",
+     "author": "OC Media",
+     "year": 2025,
+     "type": "публикация СМИ",
+     "url": "https://oc-media.org/russian-officials-issue-contradictory-statements-on-armenia-azerbaijan-washington-summit",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Не ранее 6 сентября 2025 г. (дата заявления А. Оверчука)"
+    },
+    {
+     "id": "ew-trilateral-2020",
+     "title": "Trilateral Statement of the leaders of Azerbaijan, Russian Federation and Armenia of November 10, 2020",
+     "author": "МИД Азербайджана (текст заявления)",
+     "year": 2020,
+     "type": "официальный документ стороны",
+     "url": "https://mfa.gov.az/en/category/end-of-the-conflict-in-november-2020-and-post-conflict-situation/trilateral-statement-of-the-leaders-of-azerbaijan-russian-federation-and-armenia-of-november-10-2020",
+     "doi": null,
+     "page_or_article": "п. 9",
+     "perspective": "AZE,ARM,RUS",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": null
+    },
+    {
+     "id": "ew-national-2026",
+     "title": "AD Ports boosts Middle Corridor strategy with Black Sea deal",
+     "author": "The National",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://www.thenationalnews.com/business/economy/2026/04/14/ad-ports-boosts-middle-corridor-strategy-with-black-sea-deal/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "14 апреля 2026 г.; название по адресу страницы"
+    },
+    {
+     "id": "ew-rbj-2019",
+     "title": "Grampet Group will connect Constanta Port to Asia-Europe rail transit through the Middle Corridor",
+     "author": "Romanian Business Journal",
+     "year": 2019,
+     "type": "публикация СМИ",
+     "url": "https://www.romanianbusinessjournal.ro/grampet-group-will-connect-constanta-port-to-asia-europe-rail-transit-through-the-middle-corridor/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "23 октября 2019 г."
+    },
+    {
+     "id": "ew-pravda-2025",
+     "title": "Ukraine and Georgia resume ferry service",
+     "author": "Украинская правда",
+     "year": 2025,
+     "type": "публикация СМИ",
+     "url": "https://www.pravda.com.ua/eng/news/2025/04/10/7506919",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "10 апреля 2025 г."
+    },
+    {
+     "id": "ew-reuters-2024",
+     "title": "Ukraine Resumes Ferry Services to Georgia's Black Sea Port of Batumi",
+     "author": "Reuters (MarineLink)",
+     "year": 2024,
+     "type": "публикация СМИ",
+     "url": "https://www.marinelink.com/news/ukraine-resumes-ferry-services-georgias-514594",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "analysis"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "19 июня 2024 г."
+    },
+    {
+     "id": "astanatimes-2026",
+     "title": "Can Middle Corridor Deliver on Its Promise?",
+     "author": "Dana Omirgazy (The Astana Times)",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://astanatimes.com/2026/10/can-middle-corridor-deliver-on-its-promise/",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "volumes",
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "12 октября 2026 г.; данные Министерства транспорта Казахстана"
+    },
+    {
+     "id": "bmge-2026",
+     "title": "Container traffic surges 36% on Trans-Caspian Middle Corridor in 2025",
+     "author": "BM.GE",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://bm.ge/en/news/container-traffic-surges-36-on-trans-caspian-middle-corridor-in-2025",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "17 февраля 2026 г.; данные Ассоциации ТМТМ"
+    },
+    {
+     "id": "traceca-history",
+     "title": "TRACECA History",
+     "author": "Межправительственная комиссия TRACECA (Постоянный секретариат)",
+     "year": null,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/en/about-traceca/history-of-traceca",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "appear",
+      "operate",
+      "parties",
+      "route",
+      "history"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": null
+    },
+    {
+     "id": "traceca-ferry-2014",
+     "title": "Ferry line Constanta – Batumi – Ilychevsk as the important transport nodal point in the TRACECA region",
+     "author": "Межправительственная комиссия TRACECA (Постоянный секретариат)",
+     "year": 2014,
+     "type": "официальный документ стороны",
+     "url": "https://traceca-org.org/en/news/single-news/n/ferry_line_constanta_batumi_ilychevsk_as_the_important_transport_nodal_point_in_the_traceca_region",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "international",
+     "supports": [
+      "route",
+      "history"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "22 октября 2014 г."
+    },
+    {
+     "id": "carnegie-2026",
+     "title": "Rewiring the South Caucasus: TRIPP and the New Geopolitics of Connectivity",
+     "author": "Thomas de Waal, Areg Kochinyan, Zaur Shiriyev (Carnegie Endowment)",
+     "year": 2026,
+     "type": "академическая работа",
+     "url": "https://carnegieendowment.org/research/2026/03/rewiring-the-south-caucasus-tripp-and-the-new-geopolitics-of-connectivity",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "appear",
+      "route",
+      "status",
+      "capacity"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "1 апреля 2026 г."
+    },
+    {
+     "id": "eurasianet-2026-09",
+     "title": "Start date for TRIPP trade corridor connecting Armenia and Azerbaijan pushed back",
+     "author": "Eurasianet",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://eurasianet.org/start-date-for-tripp-trade-corridor-connecting-armenia-and-azerbaijan-pushed-back",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "route",
+      "status"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "10 сентября 2026 г."
+    },
+    {
+     "id": "mfa-am-tripp",
+     "title": "Joint Statement on the Publication of the Armenia-U.S. Implementation Framework for the Trump Route for International Peace and Prosperity (TRIPP)",
+     "author": "МИД Армении",
+     "year": 2026,
+     "type": "официальный документ стороны",
+     "url": "https://www.mfa.am/en/press-releases/2026/01/14/TRIPP/13721",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "ARM,USA",
+     "supports": [
+      "appear",
+      "parties",
+      "route",
+      "status"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "14 января 2026 г."
+    },
+    {
+     "id": "eurasianet-2026-01",
+     "title": "US and Armenia unveil TRIPP development blueprint",
+     "author": "Eurasianet",
+     "year": 2026,
+     "type": "публикация СМИ",
+     "url": "https://eurasianet.org/us-and-armenia-unveil-tripp-development-blueprint",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "route",
+      "status"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "14 января 2026 г."
+    },
+    {
+     "id": "erai-instc-2025",
+     "title": "Overcoming infrastructure barriers to the development of the International North-South Transport Corridor",
+     "author": "ERAI (index1520.com), по докладу ЕАБР",
+     "year": 2025,
+     "type": "академическая работа",
+     "url": "https://index1520.com/upload/medialibrary/dfe/yi0ikrx2vy47e1bnf19wclcmp8i1w2pu/INSTC_EN.pdf",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "neutral",
+     "supports": [
+      "route",
+      "volumes",
+      "capacity",
+      "status",
+      "operate"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "Апрель 2025 г."
+    },
+    {
+     "id": "mintrans-2026",
+     "title": "Объем перевозок по Международному транспортному коридору «Север-Юг» активно растет",
+     "author": "Министерство транспорта России",
+     "year": 2026,
+     "type": "официальный документ стороны",
+     "url": "https://mintrans.gov.ru/press-center/news/12937",
+     "doi": null,
+     "page_or_article": null,
+     "perspective": "RUS",
+     "supports": [
+      "volumes"
+     ],
+     "verified_fulltext": true,
+     "accessed": "2026-11-19",
+     "language": null,
+     "note": "2 сентября 2026 г."
+    }
+   ],
+   "confidence": "medium",
+   "review": {
+    "status": "draft",
+    "last_checked": "2026-11-19",
+    "conflicts": [
+     "Возобновление парома Черноморск – Батуми: объявлено на июль 2024 г. (Reuters), первые рейсы после перерыва — 18 и 26 марта 2025 г. (Украинская правда со ссылкой на «Укрзализныцю»)",
+     "Объём 2025 г.: 4,1 млн т по Среднему коридору (Минтранс Казахстана) или 1,867 млн т (Ассоциация ТМТМ); через Грузию — 4,6 млн т (PMC Research) — методики разные",
+     "Роль Китая: «почти не участвует» (MERICS, 2019) и «сотни миллионов долларов» вложений (SCMP, 2026) — оценки разных лет"
+    ],
+    "notes": [
+     "Тезисы из таблицы автора без подтверждения в прочитанных источниках не включены: «отсутствие военной гарантии» для ЕС, «затраты Турции на БТК», «нагрузка на инфраструктуру» и «конкуренция с северными маршрутами» для Грузии, «риск изоляции без ратификации» для Армении",
+     "Доклады ОЭСР (2023, 2025) прочитаны только в виде описания",
+     "Оценки «кто выигрывает, кто теряет» приписаны источникам; это не вывод редакции",
+     "Позиции по TRIPP даны на дату источников (2025–2026 гг.) и могут меняться",
+     "Справки по Туркменистану, Узбекистану, Украине и Румынии опираются в основном на один источник на тезис"
+    ]
    }
   }
- ]
+ }
 }

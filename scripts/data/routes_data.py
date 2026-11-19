@@ -129,7 +129,7 @@ def SERIES(sid, ru, en, unit_ru, unit_en, points, note=None):
 def ROUTE(**k):
     base = OD(id=None, name=None, alt_names=[], kind=None, color=None, parties=[], appear=None, operate=None,
               summary=None, status=None, branches=[], capacity=[], volumes=[], history=[], sources=[],
-              confidence=None, needs_human_review=True, review=None)
+              confidence=None, needs_human_review=True, review=None, analysis=None)
     base.update(k)
     base["history"] = sorted(base["history"], key=lambda e: e["date"])
     return base
@@ -260,7 +260,14 @@ R.append(ROUTE(
             SEG(["batumi", "tbilisi", "baku"]), SEG(["baku", "w_baku_s", "turkmenbashi"], mode="sea"), SEG(["turkmenbashi", "ashgabat", "tashkent"])],
            note=T("Точные маршруты TRACECA в прочитанных источниках не приведены; линия проведена через порты и столицы стран-участниц.",
                   "The sources read do not give exact TRACECA routes; the line runs through ports and capitals of member states.")),
+        BR("kazakhstan", "Каспий – Казахстан (схема)", "Caspian – Kazakhstan (schematic)", [
+            SEG(["baku", "w_baku_s", "w_absheron_e", "aktau"], mode="sea"), SEG(["aktau", "kuryk"])],
+           note=T("Ветка показывает Казахстан — участника TRACECA. Путь через Каспий к портам Актау и Курык описан Всемирным банком для Среднего коридора; "
+                  "как маршрут TRACECA он в прочитанных источниках не обозначен.",
+                  "The branch shows Kazakhstan, a TRACECA member. The route across the Caspian to the ports of Aktau and Kuryk is described by the World Bank "
+                  "for the Middle Corridor; the sources read do not name it as a TRACECA route.")),
     ],
+    analysis="eastwest",
     capacity=[],
     volumes=[],
     history=[
@@ -277,7 +284,8 @@ R.append(ROUTE(
                   notes=["Сводной статистики перевозок по коридору и данных о пропускной способности в открытых источниках не найдено",
                          "Сплошная линия показана с даты подписания соглашения (1998 г.): коридор опирается на уже действовавшие пути — допущение редакции",
                          "Вступление соглашения в силу 23.05.1999 — по одному источнику (МИД Армении)",
-                         "Линия «Кавказ – Каспий – Центральная Азия» — схема, а не официальный маршрут"]),
+                         "Линия «Кавказ – Каспий – Центральная Азия» — схема, а не официальный маршрут",
+                         "Ветка «Каспий – Казахстан» добавлена как схема, чтобы показать Казахстан; как маршрут TRACECA в источниках не обозначена"]),
 ))
 
 # ============================================================================= МТК «СЕВЕР – ЮГ»
@@ -418,8 +426,10 @@ R.append(ROUTE(
         BR("blacksea", "Черноморские линии в Европу", "Black Sea lines to Europe", [
             SEG(["poti", "varna"], mode="sea"), SEG(["batumi", "w_sinop", "burgas"], mode="sea"), SEG(["poti", "constanta"], mode="sea")]),
         BR("turkey", "Через Турцию", "Via Türkiye", [SEG(["tbilisi", "kars", "istanbul"])],
-           note=T("Направление через Турцию — схема; дата открытия железной дороги Баку – Тбилиси – Карс не проверялась.", "The route via Türkiye is schematic; the opening date of the Baku–Tbilisi–Kars railway was not checked.")),
+           note=T("Направление через Турцию — схема. Железная дорога Баку – Тбилиси – Карс открыта 30 октября 2017 г. (по данным МИД Турции).",
+                  "The route via Türkiye is schematic. The Baku–Tbilisi–Kars railway opened on 30 October 2017 (per Türkiye's Foreign Ministry).")),
     ],
+    analysis="eastwest",
     capacity=[
         CAP("Пропускная способность — около 6 млн т и до 182 тыс. контейнеров в год (Министерство транспорта Казахстана).",
             "Capacity: about 6 million t and up to 182,000 containers a year (Kazakhstan's Ministry of Transport).", ["astanatimes-2026"], kind="current"),
@@ -573,12 +583,378 @@ R.append(ROUTE(
 ))
 
 
+# ============================================================================= СПРАВКА «ЗНАЧЕНИЕ»: TRACECA И СРЕДНИЙ КОРИДОР
+# Тезисы автора карты (таблица «выгоды / риски» по странам) проверены по источникам и переписаны нейтрально,
+# с указанием, чья это оценка. Тезисы без подтверждения не включены (см. review.notes).
+# Пункт с источниками одной организации помечается на сайте «1 источник» (считает build_routes.py).
+
+def PT(ru, en, *src):
+    return OD(text=T(ru, en), source_ids=list(src))
+
+
+# Коды Correlates of War (gwcode в CShapes) — для подсветки страны на карте; у Румынии в CShapes нет ISO-кода
+GW = {"KAZ": 705, "UZB": 704, "TKM": 701, "AZE": 373, "GEO": 372, "TUR": 640, "UKR": 369, "ROU": 360,
+      "ARM": 371, "IRN": 630, "CHN": 710, "USA": 2, "RUS": 365}
+
+
+def ACTOR(code, group, ru, en, econ=(), pol=(), risks=(), confidence="medium", note=None):
+    """group: route — страны маршрутов; external — другие участники и внешние игроки. code — ISO-код или EU."""
+    return OD(code=code, gw=GW.get(code), group=group, name=T(ru, en), econ=list(econ), pol=list(pol), risks=list(risks),
+              confidence=confidence, note=note)
+
+
+def REUSE(rid, sid):
+    """Источник, уже описанный в карточке маршрута rid."""
+    r = next(x for x in R if x["id"] == rid)
+    return next(s for s in r["sources"] if s["id"] == sid)
+
+
+A_SRC = [
+    S("ew-wb-2023", "Middle Trade and Transport Corridor: Policies and Investments to Triple Freight Volumes and Halve Travel Time by 2030", "Всемирный банк",
+      2023, "академическая работа", "https://www.developmentaid.org/api/frontend/cms/file/2023/11/Middle-Trade-and-Transport-Corridor-World-Bank-FINAL.pdf",
+      "international", ["analysis"], True, note="Ноябрь 2023 г.; прочитана копия PDF, размещённая DevelopmentAid"),
+    S("ew-oecd-2023", "Realising the Potential of the Middle Corridor", "ОЭСР", 2023, "академическая работа",
+      "https://www.oecd.org/en/publications/realising-the-potential-of-the-middle-corridor_635ad854-en/full-report.html", "international", ["analysis"], False,
+      note="Прочитано только описание доклада"),
+    S("ew-oecd-2025", "Enhancing the Competitiveness of the Trans-Caspian Transport Corridor in Central Asia", "ОЭСР", None, "академическая работа",
+      "https://www.oecd.org/en/publications/enhancing-the-competitiveness-of-the-trans-caspian-transport-corridor-in-central-asia_f261e7fa-en/full-report/turkmenistan_17b40db7",
+      "international", ["analysis"], False, note="Прочитано только описание доклада; год выпуска на странице не указан"),
+    S("ew-bri-2023", "Middle Corridor: from Western-initiated TRACECA to China's Belt and Road Initiative", "Vusal Guliyev (Baku Research Institute)", 2023,
+      "академическая работа", "https://bakuresearchinstitute.org/en/middle-corridor-from-western-initiated-traceca-to-chinas-belt-and-road-initiative/",
+      "neutral", ["analysis"], True, note="11 сентября 2023 г."),
+    S("ew-ec-2024", "Global Gateway: EU and Central Asian countries agree building blocks to develop Trans-Caspian transport corridor", "Европейская комиссия", 2024,
+      "официальный документ стороны",
+      "https://international-partnerships.ec.europa.eu/news-and-events/news/global-gateway-eu-and-central-asian-countries-agree-building-blocks-develop-trans-caspian-transport-2024-01-30_en",
+      "EU", ["analysis"], True, note="30 января 2024 г.; название по адресу страницы"),
+    S("ew-scmp-2026", "Alternate Route: China Invests in Europe Cargo Corridor That Avoids Russia, Middle East", "Ralph Jennings (South China Morning Post; перепечатка Caspian Post)",
+      None, "публикация СМИ", "https://caspianpost.com/regions/alternate-route-china-invests-in-europe-cargo-corridor-that-avoids-russia-middle-east",
+      "neutral", ["analysis"], True, note="29 июня; год на странице не указан"),
+    S("ew-merics-2019", "On the \"Middle Corridor,\" China is largely absent", "Jacob Mardell (MERICS)", 2019, "академическая работа",
+      "https://merics.org/index%2Ephp/en/comment/middle-corridor-china-largely-absent", "neutral", ["analysis"], True,
+      note="25 октября 2019 г.; впервые опубликовано в Berlin Policy Journal"),
+    S("ew-timesca-2024-uzb", "Azerbaijan Is Bringing Uzbekistan into the Middle Corridor", "Robert M. Cutler (The Times of Central Asia)", 2024, "публикация СМИ",
+      "https://timesca.com/azerbaijan-is-bringing-uzbekistan-into-the-middle-corridor/", "neutral", ["analysis"], True, note="19 сентября 2024 г."),
+    S("ew-pmc-2026", "Middle Corridor Transit Cargo Flows: Georgia", "PMC Research", 2026, "датасет", "https://research.pmcg-i.com/periodic/15",
+      "neutral", ["analysis"], True, note="8 сентября 2026 г."),
+    S("ew-eurasianet-anaklia", "China quietly exits Georgian port deal", "Eurasianet", 2026, "публикация СМИ",
+      "https://eurasianet.org/china-quietly-exits-georgian-port-deal", "neutral", ["analysis"], True, note="8 июля 2026 г."),
+    S("ew-intellinews-tkm", "Red tape means Turkmenistan's modern Caspian Sea port operating at third of capacity, says Middle Corridor official", "bne IntelliNews",
+      2026, "публикация СМИ",
+      "https://www.intellinews.com/red-tape-means-turkmenistan-s-modern-caspian-sea-port-operating-at-third-of-capacity-says-middle-corridor-official-450563/",
+      "neutral", ["analysis"], True, note="24 июня 2026 г.; слова генсекретаря TRACECA Ж. Чориева из интервью Gazeta.uz в пересказе Turkmen News"),
+    S("ew-mfa-tr", "Türkiye's Multilateral Transportation Policy", "МИД Турции", None, "официальный документ стороны",
+      "https://mfa.gov.tr/turkiye_s-multilateral-transportation-policy.en.mfa", "TUR", ["analysis"], True, note="Без даты; название по адресу страницы"),
+    S("ew-oc-2023", "Armenia proposes opening regional transport links as part of Crossroads of Peace", "OC Media", 2023, "публикация СМИ",
+      "https://oc-media.org/armenia-proposes-opening-regional-transport-links-as-part-of-crossroads-of-peace", "neutral", ["analysis"], True,
+      note="27 октября 2023 г.; название по адресу страницы"),
+    S("ew-aljazeera-2025", "Iran rejects planned transit corridor outlined in Armenia-Azerbaijan pact", "Al Jazeera", 2025, "публикация СМИ",
+      "https://aljazeera.com/news/2025/8/9/iran-rejects-planned-transit-corridor-outlined-in-armenia-azerbaijan-pact", "neutral", ["analysis"], True,
+      note="9 августа 2025 г."),
+    S("ew-caci-2024", "Is the Aras Corridor an Alternative to Zangezur?", "Vali Kaleji (CACI Analyst)", 2024, "академическая работа",
+      "https://www.cacianalyst.org/publications/analytical-articles/item/13788-is-the-aras-corridor-an-alternative-to-zangezur", "neutral", ["analysis"], True,
+      note="5 февраля 2024 г.; название по адресу страницы"),
+    S("ew-oc-2025-russia", "Russian officials issue contradictory statements on Armenia–Azerbaijan Washington summit", "OC Media", 2025, "публикация СМИ",
+      "https://oc-media.org/russian-officials-issue-contradictory-statements-on-armenia-azerbaijan-washington-summit", "neutral", ["analysis"], True,
+      note="Не ранее 6 сентября 2025 г. (дата заявления А. Оверчука)"),
+    S("ew-trilateral-2020", "Trilateral Statement of the leaders of Azerbaijan, Russian Federation and Armenia of November 10, 2020", "МИД Азербайджана (текст заявления)",
+      2020, "официальный документ стороны",
+      "https://mfa.gov.az/en/category/end-of-the-conflict-in-november-2020-and-post-conflict-situation/trilateral-statement-of-the-leaders-of-azerbaijan-russian-federation-and-armenia-of-november-10-2020",
+      "AZE,ARM,RUS", ["analysis"], True, page="п. 9"),
+    S("ew-national-2026", "AD Ports boosts Middle Corridor strategy with Black Sea deal", "The National", 2026, "публикация СМИ",
+      "https://www.thenationalnews.com/business/economy/2026/04/14/ad-ports-boosts-middle-corridor-strategy-with-black-sea-deal/", "neutral", ["analysis"], True,
+      note="14 апреля 2026 г.; название по адресу страницы"),
+    S("ew-rbj-2019", "Grampet Group will connect Constanta Port to Asia-Europe rail transit through the Middle Corridor", "Romanian Business Journal", 2019,
+      "публикация СМИ", "https://www.romanianbusinessjournal.ro/grampet-group-will-connect-constanta-port-to-asia-europe-rail-transit-through-the-middle-corridor/",
+      "neutral", ["analysis"], True, note="23 октября 2019 г."),
+    S("ew-pravda-2025", "Ukraine and Georgia resume ferry service", "Украинская правда", 2025, "публикация СМИ",
+      "https://www.pravda.com.ua/eng/news/2025/04/10/7506919", "neutral", ["analysis"], True, note="10 апреля 2025 г."),
+    S("ew-reuters-2024", "Ukraine Resumes Ferry Services to Georgia's Black Sea Port of Batumi", "Reuters (MarineLink)", 2024, "публикация СМИ",
+      "https://www.marinelink.com/news/ukraine-resumes-ferry-services-georgias-514594", "neutral", ["analysis"], True, note="19 июня 2024 г."),
+]
+A_SRC += [REUSE("middle", "astanatimes-2026"), REUSE("middle", "bmge-2026"), REUSE("traceca", "traceca-history"), REUSE("traceca", "traceca-ferry-2014"),
+          REUSE("tripp", "carnegie-2026"), REUSE("tripp", "eurasianet-2026-09"), REUSE("tripp", "mfa-am-tripp"), REUSE("tripp", "eurasianet-2026-01"),
+          REUSE("instc", "erai-instc-2025"), REUSE("instc", "mintrans-2026")]
+
+GENERAL = [
+    OD(id="link", title=T("TRACECA и Средний коридор", "TRACECA and the Middle Corridor"), points=[
+        PT("TRACECA запущена при поддержке ЕС в 1993 г. для развития портов и сухопутной инфраструктуры; основа Среднего коридора (ТМТМ) заложена позже — в 2013 г. в Астане. "
+           "Аналитики описывают Средний коридор как продолжение того же пути через Кавказ и Каспий, поэтому справка общая для двух маршрутов.",
+           "TRACECA was launched with EU support in 1993 to develop port and land infrastructure; the Middle Corridor (TITR) was founded later, in 2013 in Astana. "
+           "Analysts describe the Middle Corridor as a continuation of the same route across the Caucasus and the Caspian, so this section is shared by both routes.",
+           "ew-wb-2023", "ew-bri-2023"),
+        PT("Генеральный секретарь TRACECA публично оценивает работу портов транскаспийского пути — например, туркменского порта Туркменбаши.",
+           "The TRACECA Secretary General publicly assesses the work of trans-Caspian ports, such as Turkmenistan's port of Turkmenbashi.", "ew-intellinews-tkm"),
+    ]),
+    OD(id="geoecon", title=T("Геоэкономика", "Geo-economics"), points=[
+        PT("Путь связывает Китай и Центральную Азию с Европой в обход России и не зависит от морских маршрутов через Ближний Восток и вокруг Африки. "
+           "После 2022 г. санкции осложнили северный путь через Россию, и перевозки через Каспий выросли.",
+           "The route links China and Central Asia with Europe while bypassing Russia and the sea routes via the Middle East and around Africa. "
+           "After 2022, sanctions complicated the northern route through Russia and traffic across the Caspian grew.",
+           "ew-oecd-2023", "ew-scmp-2026", "ew-bri-2023"),
+        PT("По времени путь выигрывает у моря: 15–18 дней из Китая в Европу против 45–60 дней по океану (оценка турецкого дипломатического источника); "
+           "по данным Казахстана, доставка сократилась с 38 до 13–17 дней.",
+           "It is faster than the sea: 15–18 days from China to Europe versus 45–60 days by ocean (a Turkish diplomatic source's estimate); "
+           "according to Kazakhstan, delivery time has fallen from 38 to 13–17 days.",
+           "ew-scmp-2026", "astanatimes-2026"),
+        PT("Но объёмы пока малы: по прогнозу Всемирного банка, через Каспий пойдёт около 1% торговли Китая и ЕС; путь уступает северному через Россию по ёмкости и цене.",
+           "But volumes are still small: the World Bank expects the Caspian route to carry about 1% of China–EU trade; it is less capacious and more costly than the northern route via Russia.",
+           "ew-wb-2023", "ew-scmp-2026", "ew-merics-2019"),
+    ]),
+    OD(id="geopol", title=T("Геополитика", "Geopolitics"), points=[
+        PT("В развитии коридора одновременно участвуют ЕС (10 млрд евро в рамках Global Gateway), Китай (порты Актау и Баку, консорциум перевозчиков), "
+           "США (TRIPP) и Турция (железная дорога Карс – Нахичевань).",
+           "The EU (€10 billion under Global Gateway), China (the ports of Aktau and Baku, a carriers' consortium), the US (TRIPP) and Türkiye "
+           "(the Kars–Nakhchivan railway) are all involved in developing the corridor.",
+           "ew-ec-2024", "ew-scmp-2026", "astanatimes-2026", "carnegie-2026"),
+        PT("По оценкам источников, выигрывают прежде всего транзитные страны и внешние игроки, ищущие путь в обход России; транзитная роль России и Ирана снижается. Подробно — по странам ниже.",
+           "According to the sources, the main beneficiaries are the transit countries and external actors seeking a route around Russia, while the transit role of Russia and Iran declines. Details by country are below.",
+           "ew-wb-2023", "carnegie-2026", "ew-bri-2023"),
+    ]),
+    OD(id="forecast", title=T("Прогноз и факт", "Forecast and reality"), points=[
+        PT("Всемирный банк (2023): при вложениях в инфраструктуру перевозки через Каспий к 2030 г. утроятся по сравнению с 2021 г. — до 11 млн т.",
+           "World Bank (2023): with infrastructure investment, traffic across the Caspian would triple by 2030 compared with 2021, to 11 million t.", "ew-wb-2023"),
+        PT("Факт 2025 г. считают по-разному: 4,1 млн т (Министерство транспорта Казахстана) или 1,867 млн т (Ассоциация ТМТМ). Сопоставимой статистики нет, "
+           "а сводных данных по TRACECA в открытых источниках нет вовсе.",
+           "Figures for 2025 differ: 4.1 million t (Kazakhstan's Ministry of Transport) or 1.867 million t (the TITR Association). There are no comparable statistics, "
+           "and no consolidated TRACECA data in open sources at all.",
+           "astanatimes-2026", "bmge-2026"),
+    ]),
+    OD(id="risks", title=T("Риски", "Risks"), points=[
+        PT("Узкие места (Всемирный банк): нехватка судов на Каспии, задержки на границах, высокие тарифы, нет единой координации коридора. "
+           "ОЭСР добавляет неформальные платежи и нехватку складов в Центральной Азии.",
+           "Bottlenecks (World Bank): a shortage of Caspian vessels, delays at borders, high tariffs and no single corridor management. "
+           "The OECD adds informal fees and a lack of warehousing in Central Asia.",
+           "ew-wb-2023", "ew-oecd-2025"),
+        PT("Политические риски: мирный договор Армении и Азербайджана на весну 2026 г. не подписан, начало строительства TRIPP перенесено, "
+           "продолжение войны вокруг Ирана может сделать маршрут опасным, полного финансирования нет.",
+           "Political risks: the Armenia–Azerbaijan peace treaty had not been signed as of spring 2026, the start of TRIPP construction has been postponed, "
+           "a continued war around Iran could make the route dangerous, and full financing is not in place.",
+           "carnegie-2026", "eurasianet-2026-09"),
+    ]),
+    OD(id="summary", title=T("Итог по источникам", "Bottom line from the sources"), points=[
+        PT("Объёмы пока далеки от прогнозов, а судьба ключевых участков зависит от политических решений — мирного договора, TRIPP, санкций, ситуации вокруг Ирана — "
+           "не меньше, чем от инфраструктуры.",
+           "Volumes are still far from forecasts, and the fate of key sections depends on political decisions — the peace treaty, TRIPP, sanctions, the situation around Iran — "
+           "as much as on infrastructure.",
+           "ew-wb-2023", "astanatimes-2026", "carnegie-2026"),
+    ]),
+]
+
+ACTORS = [
+    # ---- страны маршрутов
+    ACTOR("KAZ", "route", "Казахстан", "Kazakhstan",
+          econ=[PT("Грузы между Китаем и Каспийским морем идут через Казахстан; порты Актау и Курык — точка перехода на суда через Каспий к портам Азербайджана.",
+                   "Cargo between China and the Caspian Sea crosses Kazakhstan; the ports of Aktau and Kuryk are where it moves onto vessels across the Caspian to Azerbaijan.",
+                   "ew-wb-2023", "astanatimes-2026", "ew-timesca-2024-uzb"),
+                PT("В Актау построен контейнерный хаб вместе с китайским портом Ляньюньган. Для Казахстана ставка — не только доходы от транзита, но и логистика и производство.",
+                   "A container hub has been built at Aktau together with China's Lianyungang port. For Kazakhstan the stakes go beyond transit revenue to logistics and manufacturing.",
+                   "astanatimes-2026", "ew-scmp-2026")],
+          pol=[PT("После 2022 г. санкции осложнили северный путь через Россию, и интерес к сухопутной связи с Европой через Каспий вырос.",
+                  "After 2022, sanctions complicated the northern route through Russia and interest in an overland link to Europe across the Caspian grew.",
+                  "ew-oecd-2023", "ew-scmp-2026", "ew-bri-2023")],
+          risks=[PT("Пропускная способность ограничена: Министерство транспорта Казахстана оценивает её примерно в 6 млн т в год; Всемирный банк называет узкими местами "
+                    "нехватку судов на Каспии, задержки на границах и высокие тарифы.",
+                    "Capacity is limited: Kazakhstan's Ministry of Transport puts it at about 6 million t a year; the World Bank names a shortage of Caspian vessels, "
+                    "border delays and high tariffs as bottlenecks.", "astanatimes-2026", "ew-wb-2023"),
+                 PT("Маршрут зависит от слаженной работы всех стран цепочки: Всемирный банк считает главной проблемой отсутствие единого управления коридором; задержка в одной точке сказывается на всём пути.",
+                    "The route depends on all countries along the chain working together: the World Bank sees the lack of single corridor management as the main problem; a delay at one point affects the whole route.",
+                    "ew-wb-2023", "astanatimes-2026")]),
+    ACTOR("UZB", "route", "Узбекистан", "Uzbekistan",
+          econ=[PT("По оценке Всемирного банка, транзит через Каспий в основном обслуживает торговлю Центральной Азии — прежде всего Узбекистана — с Европой.",
+                   "According to the World Bank, transit across the Caspian mainly serves trade between Central Asia — above all Uzbekistan — and Europe.", "ew-wb-2023"),
+                PT("Узбекистан договаривается с Азербайджаном о выходе к Каспию и рынкам Европы: по железной дороге через Туркменистан к порту Туркменбаши или через Казахстан "
+                   "к Актау и Курыку, затем через порт Алят. Соглашения предусматривают цифровые таможенные процедуры.",
+                   "Uzbekistan is negotiating with Azerbaijan for access to the Caspian and European markets: by rail via Turkmenistan to the port of Turkmenbashi or via Kazakhstan "
+                   "to Aktau and Kuryk, then through the port of Alyat. The agreements provide for digital customs procedures.", "ew-timesca-2024-uzb"),
+                PT("Страны Центральной Азии, по оценке ОЭСР, заметно продвинулись в цифровизации таможенных процедур и пограничного контроля.",
+                   "According to the OECD, Central Asian countries have made significant progress in digitalising customs procedures and border controls.", "ew-oecd-2025")],
+          pol=[PT("Узбекистан участвует в управлении коридором: генеральный секретарь TRACECA в 2026 г. — заместитель министра транспорта Узбекистана Жасурбек Чориев.",
+                  "Uzbekistan takes part in running the corridor: in 2026 the TRACECA Secretary General is Uzbekistan's deputy transport minister, Jasurbek Choriev.",
+                  "ew-intellinews-tkm")],
+          risks=[PT("Грузы Узбекистана идут к морю через территорию соседей; на пути через Туркменистан перевозчикам трудно получать визы и разрешения — вице-премьер Узбекистана назвал это существенным барьером.",
+                    "Uzbek cargo reaches the sea through neighbouring countries; carriers crossing Turkmenistan struggle to obtain visas and permits, which Uzbekistan's deputy prime minister called a significant barrier.",
+                    "ew-intellinews-tkm", "ew-timesca-2024-uzb"),
+                 PT("Общие ограничения для Центральной Азии (ОЭСР): неформальные платежи, нехватка складских мощностей, мало частных инвестиций.",
+                    "Common constraints in Central Asia (OECD): informal fees, warehousing bottlenecks and limited private investment.", "ew-oecd-2025")],
+          confidence="low"),
+    ACTOR("TKM", "route", "Туркменистан", "Turkmenistan",
+          econ=[PT("Порт Туркменбаши (открыт в мае 2018 г.) — альтернатива казахстанским портам для перевозок через Каспий в Азербайджан; в 2025 г. он обработал 7,3 млн т грузов.",
+                   "The port of Turkmenbashi (opened in May 2018) is an alternative to Kazakhstan's ports for shipments across the Caspian to Azerbaijan; it handled 7.3 million t in 2025.",
+                   "ew-intellinews-tkm", "ew-timesca-2024-uzb")],
+          pol=[PT("Туркменистан входит в число стран Центральной Азии, с которыми ЕС в 2024 г. согласовал развитие Транскаспийского коридора.",
+                  "Turkmenistan is among the Central Asian countries with which the EU agreed in 2024 to develop the Trans-Caspian corridor.", "ew-ec-2024"),
+               PT("По оценке генсекретаря TRACECA, если Туркменистан решит проблемы порта, он сможет сильнее конкурировать с Казахстаном за транскаспийские грузы.",
+                  "According to the TRACECA Secretary General, if Turkmenistan solves the port's problems it could compete more strongly with Kazakhstan for trans-Caspian cargo.",
+                  "ew-intellinews-tkm")],
+          risks=[PT("Порт загружен примерно на 25–30%: перевозчикам трудно получить визы и разрешения.",
+                    "The port runs at about 25–30% of capacity: carriers find it hard to obtain visas and permits.", "ew-intellinews-tkm")],
+          confidence="low"),
+    ACTOR("AZE", "route", "Азербайджан", "Azerbaijan",
+          econ=[PT("Порт Баку в Аляте принимает грузы с Каспия; дальше они идут по железной дороге в Грузию и Турцию — линия Баку – Тбилиси – Карс открыта 30 октября 2017 г.",
+                   "The Port of Baku at Alyat receives cargo from across the Caspian; it then moves by rail to Georgia and Türkiye — the Baku–Tbilisi–Kars line opened on 30 October 2017.",
+                   "ew-wb-2023", "ew-timesca-2024-uzb", "ew-mfa-tr")],
+          pol=[PT("Маршрут через Армению (TRIPP) восстанавливает кратчайшую сухопутную связь основной части Азербайджана с Нахичеванью. В Азербайджане его называют "
+                  "«Зангезурским коридором»; в Армении это название не используют.",
+                  "The route through Armenia (TRIPP) restores the shortest overland link between mainland Azerbaijan and Nakhchivan. In Azerbaijan it is called the "
+                  "\"Zangezur corridor\"; Armenians do not use this name.", "carnegie-2026", "ew-caci-2024", "ew-oc-2023"),
+               PT("Параллельно Азербайджан и Иран 9 октября 2023 г. договорились о дороге и железной дороге в Нахичевань через Иран вдоль Аракса (около 55 км).",
+                  "In parallel, on 9 October 2023 Azerbaijan and Iran agreed on a road and railway to Nakhchivan through Iran along the Aras (about 55 km).",
+                  "ew-caci-2024", "carnegie-2026")],
+          risks=[PT("Мирный договор с Арменией на весну 2026 г. был парафирован, но не подписан.",
+                    "As of spring 2026 the peace treaty with Armenia had been initialled but not signed.", "carnegie-2026"),
+                 PT("Начало строительства армянского участка TRIPP перенесено — не раньше 2027 г.",
+                    "Construction of the Armenian section of TRIPP has been postponed until 2027 at the earliest.", "eurasianet-2026-09")]),
+    ACTOR("GEO", "route", "Грузия", "Georgia",
+          econ=[PT("Грузия — звено между Каспием и Чёрным морем: грузы идут по железной дороге к портам Поти и Батуми и дальше через Чёрное море (например, в Констанцу) или через Турцию.",
+                   "Georgia links the Caspian and the Black Sea: cargo travels by rail to the ports of Poti and Batumi and on across the Black Sea (for example, to Constanța) or via Türkiye.",
+                   "ew-wb-2023", "ew-rbj-2019"),
+                PT("Транзит по Среднему коридору через Грузию вырос вдвое с 2018 по 2025 г. — до 4,6 млн т; рост 2025 г. обеспечила в основном региональная торговля, максимум — 5,0 млн т в 2022 г.",
+                   "Middle Corridor transit through Georgia doubled between 2018 and 2025 to 4.6 million t; growth in 2025 came mainly from regional trade; the peak was 5.0 million t in 2022.",
+                   "ew-pmc-2026")],
+          pol=[PT("Глубоководный порт Анаклия: контракт с грузино-американским консорциумом расторгнут в 2020 г., в 2024 г. подряд получил китайский консорциум, "
+                  "в июле 2026 г. правительство объявило о его выходе и о государственной собственности на порт. Критики считают это попыткой вернуть расположение Запада, сохранив роль в Среднем коридоре.",
+                  "Anaklia deep-sea port: the contract with a Georgian–US consortium was cancelled in 2020, a Chinese consortium won the contract in 2024, and in July 2026 "
+                  "the government announced its exit and state ownership of the port. Critics see this as an attempt to regain Western goodwill while keeping a Middle Corridor role.",
+                  "ew-eurasianet-anaklia")],
+          risks=[PT("Всемирный банк (2023) рекомендует снизить тарифы на обработку контейнеров в черноморских портах коридора — по его данным, самые высокие на Чёрном море.",
+                    "The World Bank (2023) recommends cutting container handling tariffs at the corridor's Black Sea ports, which it says are the highest on the Black Sea.",
+                    "ew-wb-2023")]),
+    ACTOR("TUR", "route", "Турция", "Türkiye",
+          econ=[PT("Турция продвигает Средний коридор как часть возрождения Шёлкового пути: через её порты азиатские грузы получают выход на Ближний Восток, в Северную Африку и Средиземноморье.",
+                   "Türkiye promotes the Middle Corridor as part of reviving the Silk Road: its ports give Asian cargo access to the Middle East, North Africa and the Mediterranean.",
+                   "ew-mfa-tr", "carnegie-2026"),
+                PT("МИД Турции называет железную дорогу Баку – Тбилиси – Карс (открыта 30 октября 2017 г.) новой возможностью для бесперебойной торговли Китая и Европы.",
+                   "Türkiye's Foreign Ministry calls the Baku–Tbilisi–Kars railway (opened 30 October 2017) a new opportunity for uninterrupted China–Europe trade.", "ew-mfa-tr")],
+          pol=[PT("Турция строит двухпутную железную дорогу Карс – Дилуджу (Нахичевань), чтобы через TRIPP напрямую связать Турцию и Азербайджан.",
+                  "Türkiye is building a double-track railway from Kars to Dilucu (Nakhchivan) to link Türkiye and Azerbaijan directly via TRIPP.", "carnegie-2026"),
+               PT("Турция — участник TRACECA, Постоянный секретариат которой находится в Баку.",
+                  "Türkiye is a member of TRACECA, whose Permanent Secretariat is in Baku.", "ew-mfa-tr", "traceca-history")],
+          risks=[PT("По оценке Всемирного банка (2023), из-за неэффективности и пробелов в инфраструктуре на территории Турции операторы пока предпочитают путь через Чёрное море.",
+                    "According to the World Bank (2023), inefficiencies and infrastructure gaps in Türkiye mean operators currently prefer the Black Sea route.", "ew-wb-2023")]),
+    ACTOR("UKR", "route", "Украина", "Ukraine",
+          econ=[PT("Паромная линия Черноморск – Батуми даёт Украине прямой выход к рынкам Кавказа и Центральной Азии; линия Ильичёвск (Черноморск) – Констанца – Батуми работала как узел TRACECA с 2014 г.",
+                   "The Chornomorsk–Batumi ferry gives Ukraine direct access to markets in the Caucasus and Central Asia; the Illichivsk (Chornomorsk) – Constanța – Batumi line has served as a TRACECA hub since 2014.",
+                   "ew-reuters-2024", "traceca-ferry-2014")],
+          risks=[PT("Паромное сообщение остановлено после начала полномасштабного вторжения России в 2022 г. Возобновление объявлено в июне 2024 г.; первые рейсы после перерыва, "
+                    "по данным «Укрзализныци», прошли 18 и 26 марта 2025 г.",
+                    "Ferry services stopped after Russia's full-scale invasion in 2022. A restart was announced in June 2024; according to Ukrzaliznytsia, the first sailings after the break "
+                    "took place on 18 and 26 March 2025.", "ew-reuters-2024", "ew-pravda-2025")],
+          confidence="low", note=T("Политическая функция маршрута для Украины в прочитанных источниках не описана.", "The sources read do not describe the route's political role for Ukraine.")),
+    ACTOR("ROU", "route", "Румыния", "Romania",
+          econ=[PT("Констанца — один из крупнейших портов Европы (около 88 млн т в 2025 г.); он связывает черноморские линии с внутренними водными путями Центральной и Восточной Европы. "
+                   "В апреле 2026 г. AD Ports Group (ОАЭ) договорилась изучить инвестиции в порт в рамках своей стратегии по Среднему коридору.",
+                   "Constanța is one of Europe's largest ports (about 88 million t in 2025); it links Black Sea shipping with the inland waterways of Central and Eastern Europe. "
+                   "In April 2026 AD Ports Group (UAE) agreed to explore investment in the port as part of its Middle Corridor strategy.", "ew-national-2026"),
+                PT("Морская линия Батуми/Поти – Констанца связывает Средний коридор с Румынией; её оператор называл её «последним недостающим звеном» цепочки. "
+                   "Паромы до Констанцы ходят и по линии TRACECA.",
+                   "The Batumi/Poti – Constanța sea link connects the Middle Corridor with Romania; its operator called it \"the last missing link\" in the chain. "
+                   "Ferries to Constanța also run on the TRACECA line.", "ew-rbj-2019", "traceca-ferry-2014")],
+          confidence="low", note=T("Политическая функция и риски для Румынии в прочитанных источниках не описаны.", "The sources read do not describe the political role or risks for Romania.")),
+    # ---- другие участники и внешние игроки
+    ACTOR("ARM", "external", "Армения", "Armenia",
+          econ=[PT("Армения рассматривает открытие границ как условие диверсификации экономики и видит себя региональным транспортным узлом (концепция «Перекрёсток мира», 2023 г.). "
+                   "Границы с Турцией и Азербайджаном закрыты с 1990-х годов.",
+                   "Armenia sees open borders as essential to diversifying its economy and envisions itself as a regional transport hub (the Crossroads of Peace concept, 2023). "
+                   "Its borders with Türkiye and Azerbaijan have been closed since the 1990s.", "carnegie-2026", "ew-oc-2023")],
+          pol=[PT("Принцип «Перекрёстка мира» — суверенитет и юрисдикция страны над проходящими через неё путями; по рамочному документу США и Армении инфраструктура TRIPP остаётся под суверенитетом Армении.",
+                  "The Crossroads of Peace principle is each country's sovereignty and jurisdiction over routes through its territory; under the US–Armenia framework, TRIPP infrastructure remains under Armenian sovereignty.",
+                  "ew-oc-2023", "carnegie-2026", "mfa-am-tripp")],
+          risks=[PT("Реализация TRIPP — «большое испытание» для Армении (Carnegie): полное финансирование не обеспечено, инциденты безопасности легко политизируются, оппозиция может попытаться изменить курс правительства.",
+                    "Implementing TRIPP is a \"big test\" for Armenia (Carnegie): full financing is not secured, security incidents are easily politicised, and the opposition may try to change the government's course.",
+                    "carnegie-2026"),
+                 PT("Начало строительства перенесено — не раньше 2027 г.", "The start of construction has been postponed until 2027 at the earliest.", "eurasianet-2026-09")],
+          note=T("Армения — участник TRACECA; линия TRACECA на карте через её территорию не проходит. См. также карточку TRIPP.",
+                 "Armenia is a TRACECA member; the TRACECA line on the map does not cross its territory. See also the TRIPP card.")),
+    ACTOR("IRN", "external", "Иран", "Iran",
+          econ=[PT("Иран опасается потерять роль транзитной страны между основной частью Азербайджана и Нахичеванью; альтернатива для него — согласованный 9 октября 2023 г. маршрут через Иран вдоль Аракса.",
+                   "Iran fears losing its role as a transit country between mainland Azerbaijan and Nakhchivan; its alternative is the route through Iran along the Aras agreed on 9 October 2023.",
+                   "carnegie-2026", "ew-caci-2024")],
+          pol=[PT("В августе 2025 г. советник верховного лидера Ирана Али Акбар Велаяти заявил, что Иран заблокирует маршрут «с Россией или без»; МИД Ирана, приветствуя мирное соглашение, "
+                  "призвал развивать проекты у границ Ирана без иностранного вмешательства.",
+                  "In August 2025 Ali Akbar Velayati, adviser to Iran's Supreme Leader, said Iran would block the route \"with or without Russia\"; Iran's Foreign Ministry, while welcoming the peace deal, "
+                  "called for projects near Iran's borders to proceed without foreign interference.", "ew-aljazeera-2025", "carnegie-2026"),
+               PT("Аналитики Carnegie допускают, что Иран может смириться с железной дорогой под юрисдикцией Армении.",
+                  "Carnegie analysts suggest Iran could tolerate a railway under Armenian jurisdiction.", "carnegie-2026")],
+          note=T("Иран — участник TRACECA; линия TRACECA на карте через его территорию не проходит.", "Iran is a TRACECA member; the TRACECA line on the map does not cross its territory.")),
+    ACTOR("CHN", "external", "Китай", "China",
+          econ=[PT("Для Китая путь через Каспий — способ диверсифицировать поставки в Европу в обход России и морских «узких мест». Китайские госкомпании вложили в коридор сотни миллионов долларов, "
+                   "в том числе в порты Актау и Баку.",
+                   "For China, the Caspian route is a way to diversify shipments to Europe around Russia and maritime chokepoints. Chinese state firms have invested hundreds of millions of dollars in the corridor, "
+                   "including in the ports of Aktau and Baku.", "ew-scmp-2026", "astanatimes-2026")],
+          pol=[PT("Роль Китая выросла: в 2019 г. аналитики MERICS писали, что Китай почти не участвует в коридоре и сомневается в его жизнеспособности; в 2026 г. China Railway Container Transport "
+                  "вошла в консорциум «Средний коридор», а в Актау работает хаб с портом Ляньюньган.",
+                  "China's role has grown: in 2019 MERICS analysts wrote that China was largely absent from the corridor and doubted its viability; in 2026 China Railway Container Transport "
+                  "joined the Middle Corridor consortium, and a hub with Lianyungang port operates at Aktau.", "ew-merics-2019", "astanatimes-2026")],
+          risks=[PT("Маршрут уступает пути через Россию по ёмкости и эффективности; по прогнозу Всемирного банка, через Каспий пойдёт лишь около 1% торговли Китая и ЕС.",
+                    "The route falls short of the path through Russia in capacity and efficiency; the World Bank expects only about 1% of China–EU trade to go across the Caspian.",
+                    "ew-wb-2023", "ew-scmp-2026")]),
+    ACTOR("EU", "external", "Европейский союз", "European Union",
+          econ=[PT("В январе 2024 г. на форуме инвесторов ЕС – Центральная Азия объявлено о вложениях 10 млрд евро в транспорт Центральной Азии (гранты и гарантии Еврокомиссии, ЕИБ, ЕБРР, "
+                   "страны ЕС, частный сектор). Цель — путь между Европой и Центральной Азией через Чёрное море и Кавказ за 15 дней.",
+                   "In January 2024 the EU–Central Asia investors forum announced €10 billion for transport in Central Asia (European Commission grants and guarantees, the EIB, the EBRD, "
+                   "EU member states and the private sector). The goal is a 15-day route between Europe and Central Asia via the Black Sea and the Caucasus.", "ew-ec-2024")],
+          pol=[PT("TRACECA запущена при поддержке ЕС в 1993 г. для развития портов и сухопутной инфраструктуры и задумывалась как путь в обход России и Ирана. После 2022 г. интерес вырос: "
+                  "санкции осложнили северный путь через Россию.",
+                  "TRACECA was launched with EU support in 1993 to develop port and land infrastructure and was conceived as a route avoiding Russia and Iran. Interest grew after 2022, "
+                  "when sanctions complicated the northern route through Russia.", "ew-wb-2023", "ew-bri-2023", "ew-oecd-2023")],
+          risks=[PT("Пока это путь малой ёмкости: Всемирный банк не ожидает, что Средний коридор полностью заменит северный, а его доля в торговле ЕС и Китая останется около 1%.",
+                    "For now it is a low-capacity route: the World Bank does not expect the Middle Corridor to fully replace the northern one, and its share of EU–China trade to stay around 1%.",
+                    "ew-wb-2023", "ew-scmp-2026")],
+          note=T("ЕС — не государство, поэтому на карте не подсвечивается.", "The EU is not a state, so it is not highlighted on the map.")),
+    ACTOR("USA", "external", "США", "United States",
+          econ=[PT("По рамочному документу США и Армении (январь 2026 г.) TRIPP строит компания-разработчик: 74% у США, 26% у Армении; права — на 49 лет с возможным продлением на 50 лет.",
+                   "Under the US–Armenia framework (January 2026), TRIPP is built by a development company: 74% US, 26% Armenia; rights for 49 years, extendable by 50 years.",
+                   "mfa-am-tripp", "eurasianet-2026-01")],
+          pol=[PT("Маршрут назван в честь президента США; часть стран региона, по оценке Carnegie, приветствует участие США как способ уменьшить влияние России. Иран считает присутствие США у своей границы угрозой.",
+                  "The route is named after the US president; according to Carnegie, some countries in the region welcome US involvement as a way to reduce Russian influence. Iran sees a US presence near its border as a threat.",
+                  "carnegie-2026", "ew-aljazeera-2025")],
+          risks=[PT("Полное финансирование TRIPP не обеспечено (Carnegie); строительство в Армении перенесено не раньше 2027 г. (Eurasianet).",
+                    "Full financing for TRIPP is not secured (Carnegie); construction in Armenia has been postponed until 2027 at the earliest (Eurasianet).",
+                    "carnegie-2026", "eurasianet-2026-09")]),
+    ACTOR("RUS", "external", "Россия", "Russia",
+          econ=[PT("Санкции против перевозок через Россию повысили интерес к пути через Каспий, но, по оценке Всемирного банка, Средний коридор не заменит северный путь полностью.",
+                   "Sanctions on shipments through Russia raised interest in the Caspian route, but according to the World Bank the Middle Corridor will not fully replace the northern route.",
+                   "ew-oecd-2023", "ew-wb-2023"),
+                PT("Россия развивает собственный выход на юг — МТК «Север – Юг» (см. карточку маршрута); Минтранс России сообщает о росте перевозок по нему.",
+                   "Russia is developing its own southern outlet, the North–South Transport Corridor (see its card); Russia's Ministry of Transport reports growing traffic on it.",
+                   "erai-instc-2025", "mintrans-2026")],
+          pol=[PT("По заявлению лидеров Азербайджана, Армении и России от 10 ноября 2020 г. контроль за транспортным сообщением с Нахичеванью должны были осуществлять пограничники ФСБ России. "
+                  "Рамочный документ TRIPP оставляет пограничный и таможенный контроль за Арменией.",
+                  "Under the 10 November 2020 statement by the leaders of Azerbaijan, Armenia and Russia, transport links to Nakhchivan were to be controlled by Russia's FSB Border Guard Service. "
+                  "The TRIPP framework leaves border and customs control with Armenia.", "ew-trilateral-2020", "carnegie-2026", "mfa-am-tripp"),
+               PT("Оценки в Москве расходились: вице-премьер Алексей Оверчук назвал дорогу вкладом в общий транспортный каркас Евразии, министр иностранных дел Сергей Лавров сомневался в прочности договорённостей.",
+                  "Views in Moscow differed: Deputy Prime Minister Alexei Overchuk called the road a contribution to a common Eurasian transport framework, while Foreign Minister Sergei Lavrov doubted the deals would hold.",
+                  "ew-oc-2025-russia")],
+          risks=[PT("По оценке Carnegie, влияние России на Южном Кавказе резко ослабло.", "According to Carnegie, Russia's influence in the South Caucasus has sharply diminished.", "carnegie-2026")]),
+]
+
+ANALYSES = OD(eastwest=OD(
+    id="eastwest",
+    title=T("Значение маршрута", "Significance of the route"),
+    scope=T("Справка общая для TRACECA и Среднего коридора: современный путь TRACECA через Каспий совпадает со Средним коридором. "
+            "Тезисы автора карты проверены по источникам; оценки приписаны их авторам.",
+            "This section is shared by TRACECA and the Middle Corridor: TRACECA's present-day route across the Caspian coincides with the Middle Corridor. "
+            "The map author's points were checked against sources; assessments are attributed to their authors."),
+    general=GENERAL, actors=ACTORS, sources=A_SRC, confidence="medium",
+    review=REVIEW(
+        conflicts=["Возобновление парома Черноморск – Батуми: объявлено на июль 2024 г. (Reuters), первые рейсы после перерыва — 18 и 26 марта 2025 г. (Украинская правда со ссылкой на «Укрзализныцю»)",
+                   "Объём 2025 г.: 4,1 млн т по Среднему коридору (Минтранс Казахстана) или 1,867 млн т (Ассоциация ТМТМ); через Грузию — 4,6 млн т (PMC Research) — методики разные",
+                   "Роль Китая: «почти не участвует» (MERICS, 2019) и «сотни миллионов долларов» вложений (SCMP, 2026) — оценки разных лет"],
+        notes=["Тезисы из таблицы автора без подтверждения в прочитанных источниках не включены: «отсутствие военной гарантии» для ЕС, «затраты Турции на БТК», "
+               "«нагрузка на инфраструктуру» и «конкуренция с северными маршрутами» для Грузии, «риск изоляции без ратификации» для Армении",
+               "Доклады ОЭСР (2023, 2025) прочитаны только в виде описания",
+               "Оценки «кто выигрывает, кто теряет» приписаны источникам; это не вывод редакции",
+               "Позиции по TRIPP даны на дату источников (2025–2026 гг.) и могут меняться",
+               "Справки по Туркменистану, Узбекистану, Украине и Румынии опираются в основном на один источник на тезис"]),
+))
+
+
 def main(path):
     out = OD(meta=OD(generated=ACC, note_ru="Схема транспортных коридоров. Линии проведены через узлы, названные в источниках; координаты приблизительные.",
                      note_en="Schematic transport corridors. Lines run through nodes named in the sources; coordinates are approximate."),
              nodes=OD((k, OD(ru=v[0], en=v[1], lon=v[2], lat=v[3], iso=v[4])) for k, v in NODES.items()),
              waypoints=OD((k, OD(lon=v[0], lat=v[1])) for k, v in WAYPOINTS.items()),
-             routes=R)
+             routes=R, analyses=ANALYSES)
     json.dump(out, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("маршрутов:", len(R), "узлов:", len(NODES))
 

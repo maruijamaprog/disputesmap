@@ -174,18 +174,25 @@ function kv(rows) {
   return el('dl', { class: 'kv' }, rows.filter(Boolean).map(([k, v]) => [el('dt', { text: k }), el('dd', {}, v)]));
 }
 
+// выбранная вкладка карточки переживает перерисовку (смена даты, проигрывание шкалы)
+const TAB_STATE = new Map();
+/** Новая карточка открывается с первой вкладки. */
+export function resetTabs() { TAB_STATE.clear(); }
+
 function tabs(id, panes) {
   // panes: [{key, label, body}] — вкладки с клавиатурой (стрелки влево/вправо)
   const list = el('div', { class: 'tabs', role: 'tablist' });
   const bodies = [];
+  const first = Math.max(0, panes.findIndex((p) => p.key === TAB_STATE.get(id)));
   panes.forEach((p, i) => {
     const tid = `${id}-tab-${p.key}`, pid = `${id}-pane-${p.key}`;
-    const b = el('button', { type: 'button', role: 'tab', id: tid, 'aria-controls': pid, 'aria-selected': i === 0 ? 'true' : 'false', tabindex: i === 0 ? '0' : '-1', text: p.label });
+    const b = el('button', { type: 'button', role: 'tab', id: tid, 'aria-controls': pid, 'aria-selected': i === first ? 'true' : 'false', tabindex: i === first ? '0' : '-1', text: p.label });
     list.append(b);
-    bodies.push(el('div', { role: 'tabpanel', id: pid, 'aria-labelledby': tid, class: 'tabpane', hidden: i !== 0 }, p.body));
+    bodies.push(el('div', { role: 'tabpanel', id: pid, 'aria-labelledby': tid, class: 'tabpane', hidden: i !== first }, p.body));
   });
   const btns = () => [...list.querySelectorAll('[role="tab"]')];
   const select = (i) => {
+    TAB_STATE.set(id, panes[i].key);
     btns().forEach((b, k) => { b.setAttribute('aria-selected', String(k === i)); b.tabIndex = k === i ? 0 : -1; bodies[k].hidden = k !== i; });
   };
   list.addEventListener('click', (e) => { const b = e.target.closest('[role="tab"]'); if (b) select(btns().indexOf(b)); });
@@ -335,12 +342,18 @@ export function renderRefCard(card, { p, T, onClose }) {
 }
 
 // ---------------------------------------------------------------- карточка транспортного маршрута
-export function renderRouteCard(card, { r, T, actors, nodes, through, onClose, onActor }) {
+export function renderRouteCard(card, { r, T, actors, nodes, through, analysis = null, actorSel = null, nameOf, onClose, onActor, onGw, onPickActor }) {
   const lang = getLang();
   const did = `route-${r.id}`;
-  const srcIndex = new Map(r.sources.map((s, i) => [s.id, i + 1]));
+  // источники справки «Значение» нумеруются после источников маршрута (общие — один раз)
+  const extraSrc = analysis ? analysis.sources.filter((s) => !r.sources.some((x) => x.id === s.id)) : [];
+  const srcIndex = new Map([...r.sources, ...extraSrc].map((s, i) => [s.id, i + 1]));
   const st = routeStatus(r, T.ref);
-  const actorLink = (code) => el('button', { type: 'button', class: 'linklike', onclick: () => onActor(code), text: actorName(code, actors) });
+  // названия и переходы: сначала из справки «Значение» (там есть код страны CShapes), затем из справочников
+  const anActor = (code) => analysis?.actors.find((a) => a.code === code) || null;
+  const cname = (code) => (anActor(code) ? tx(anActor(code).name) : nameOf ? nameOf(code) : actorName(code, actors));
+  const openCountry = (code) => { const a = anActor(code); if (a?.gw && onGw) onGw(a.gw); else onActor(code); };
+  const actorLink = (code) => el('button', { type: 'button', class: 'linklike', onclick: () => openCountry(code), text: cname(code) });
   const nodeName = (id) => (nodes[id] ? (lang === 'ru' ? nodes[id].ru : nodes[id].en) : null);
 
   const badges = el('div', { class: 'badges' },
@@ -401,13 +414,68 @@ export function renderRouteCard(card, { r, T, actors, nodes, through, onClose, o
         el('time', { text: formatDate(h.date, lang) }), el('p', {}, tx(h.text), ' ', refs(h.source_ids, srcIndex, did)))))
     : el('p', { class: 'muted', text: t('card.history.none') });
 
-  const sources = el('ol', { class: 'sources' }, r.sources.map((s) => el('li', { id: `src-${did}-${s.id}` },
+  const srcItem = (s) => el('li', { id: `src-${did}-${s.id}` },
     s.url ? el('a', { href: s.url, target: '_blank', rel: 'noopener noreferrer', text: s.title }) : el('span', { text: s.title }),
-    el('span', { class: 'src-meta', text: ` — ${sourceLabel(s)}; ${s.type}${s.page_or_article ? '; ' + s.page_or_article : ''}${s.note ? '; ' + s.note : ''}; ${s.verified_fulltext ? t('card.verified') : t('card.notverified')}` }))));
-  const review = (r.review.conflicts.length || r.review.notes.length)
-    ? el('details', { class: 'more review' }, el('summary', { text: t('card.review') }),
-        el('ul', {}, [...r.review.conflicts, ...r.review.notes].map((x) => el('li', { class: 'small', text: x }))))
-    : null;
+    el('span', { class: 'src-meta', text: ` — ${sourceLabel(s)}; ${s.type}${s.page_or_article ? '; ' + s.page_or_article : ''}${s.note ? '; ' + s.note : ''}; ${s.verified_fulltext ? t('card.verified') : t('card.notverified')}` }));
+  const sources = el('ol', { class: 'sources' }, r.sources.map(srcItem));
+  const reviewBox = (rv, label) => ((rv.conflicts.length || rv.notes.length)
+    ? el('details', { class: 'more review' }, el('summary', { text: label }),
+        el('ul', {}, [...rv.conflicts, ...rv.notes].map((x) => el('li', { class: 'small', text: x }))))
+    : null);
+  const review = reviewBox(r.review, t('card.review'));
+  const aSources = analysis ? [
+    el('h3', { text: t('route.analysis.sources') }),
+    extraSrc.length ? el('ol', { class: 'sources', start: String(r.sources.length + 1) }, extraSrc.map(srcItem)) : null,
+    analysis.sources.length > extraSrc.length ? el('p', { class: 'small muted', text: t('route.analysis.shared') }) : null,
+    reviewBox(analysis.review, t('route.analysis.review')),
+  ] : null;
+
+  // справка «Значение»: общие разделы (вкладка) и выбор страны (внизу карточки)
+  const point = (pt) => el('li', {}, tx(pt.text), ' ', refs(pt.source_ids, srcIndex, did),
+    pt.single ? el('span', { class: 'badge warn', text: t('route.single') }) : null);
+  const meaning = analysis ? [
+    el('p', { class: 'small muted', text: tx(analysis.scope) }),
+    ...analysis.general.map((sec) => [el('h3', { text: tx(sec.title) }), el('ul', { class: 'plain pts' }, sec.points.map(point))]),
+    el('p', { class: 'small muted', text: t('route.actors.below') }),
+  ] : null;
+  let actorsSec = null;
+  if (analysis) {
+    const panel = el('div', { class: 'actor-panel', id: `${did}-actor` });
+    const chipsFor = (group) => el('div', { class: 'actor-chips', role: 'group', 'aria-label': t(`route.actors.${group}`) },
+      analysis.actors.filter((a) => a.group === group).map((a) => el('button', {
+        type: 'button', class: 'actor-chip', 'data-code': a.code, 'aria-pressed': String(a.code === actorSel), 'aria-controls': `${did}-actor`,
+        style: `--route:${r.color}`, text: tx(a.name) })));
+    let pick = null;
+    const show = (code, focus) => {
+      const a = analysis.actors.find((x) => x.code === code);
+      actorsSec.querySelectorAll('.actor-chip').forEach((b) => b.setAttribute('aria-pressed', String(!!a && b.dataset.code === code)));
+      if (!a) { panel.replaceChildren(); panel.hidden = true; return; }
+      const part = (key) => [el('h4', { text: t(`route.actor.${key}`) }),
+        a[key].length ? el('ul', { class: 'plain pts' }, a[key].map(point)) : el('p', { class: 'muted small', text: t('route.actor.none') })];
+      fill(panel,
+        el('div', { class: 'actor-panel-head' },
+          el('h3', { tabindex: '-1', text: tx(a.name) }),
+          a.confidence === 'low' ? el('span', { class: 'badge warn', text: t('conf.low') }) : null,
+          el('button', { type: 'button', class: 'icon-btn', 'aria-label': t('route.actor.close'), title: t('route.actor.close'), onclick: () => pick(null) }, icon('close'))),
+        a.note ? el('p', { class: 'small muted', text: tx(a.note) }) : null,
+        ...part('econ'), ...part('pol'), ...part('risks'),
+        /^[A-Z]{3}$/.test(a.code) ? el('p', {}, el('button', { type: 'button', class: 'linklike small', onclick: () => openCountry(a.code), text: t('route.actor.card') })) : null);
+      panel.hidden = false;
+      if (focus) panel.querySelector('h3')?.focus();
+    };
+    pick = (code) => { show(code, !!code); onPickActor?.(code); };
+    actorsSec = el('section', { class: 'sec route-actors' },
+      el('h3', {}, icon('globe'), t('route.actors.title')),
+      el('p', { class: 'small muted', text: t('route.actors.hint') }),
+      el('p', { class: 'actor-group', text: t('route.actors.route') }), chipsFor('route'),
+      el('p', { class: 'actor-group', text: t('route.actors.external') }), chipsFor('external'),
+      panel);
+    actorsSec.addEventListener('click', (e) => {
+      const b = e.target.closest('.actor-chip');
+      if (b) pick(b.getAttribute('aria-pressed') === 'true' ? null : b.dataset.code);
+    });
+    show(actorSel, false);
+  }
 
   fill(card,
     cardHead({ eyebrow: t('route.eyebrow'), title: tx(r.name), sub: t('actor.asof', { date: formatMonth(T, lang) }), onClose, extra: badges }),
@@ -418,9 +486,11 @@ export function renderRouteCard(card, { r, T, actors, nodes, through, onClose, o
     ...tabs(did, [
       { key: 'overview', label: t('card.tab.overview'), body: overview },
       { key: 'load', label: t('route.tab.load'), body: load },
+      analysis ? { key: 'meaning', label: t('route.tab.meaning'), body: meaning } : null,
       { key: 'history', label: t('card.tab.history'), body: history },
-      { key: 'sources', label: t('card.tab.sources', { n: r.sources.length }), body: [sources, review] },
-    ]));
+      { key: 'sources', label: t('card.tab.sources', { n: r.sources.length + extraSrc.length }), body: [sources, review, aSources] },
+    ].filter(Boolean)),
+    actorsSec);
   card.hidden = false;
 }
 

@@ -168,12 +168,40 @@ def main():
                                     geometry=OD(type="LineString", coordinates=[[round(c[0], 4), round(c[1], 4)] for c in part])))
         through[rid] = list(isos.keys())
 
+    # --- справки «Значение»: ссылки на источники, пометка «1 источник» (меньше двух независимых организаций)
+    analyses = D.get("analyses") or {}
+    for r in D["routes"]:
+        if r.get("analysis") and r["analysis"] not in analyses:
+            probs.append(f"{r['id']}: нет справки {r['analysis']}")
+    for aid, an in analyses.items():
+        ids = {s["id"]: s for s in an["sources"]}
+        if len(ids) != len(an["sources"]):
+            probs.append(f"справка {aid}: повторяются id источников")
+        org = lambda s: s["author"].split(" (")[0]
+
+        def check(pt, where):
+            for x in pt["source_ids"]:
+                if x not in ids: probs.append(f"справка {aid}/{where}: нет источника {x}")
+            if not pt["source_ids"]: probs.append(f"справка {aid}/{where}: пункт без источников")
+            pt["single"] = len({org(ids[x]) for x in pt["source_ids"] if x in ids}) < 2
+        for sec in an["general"]:
+            for i, pt in enumerate(sec["points"]): check(pt, f"{sec['id']}#{i}")
+        codes = set()
+        for ac in an["actors"]:
+            if ac["code"] in codes: probs.append(f"справка {aid}: страна {ac['code']} повторяется")
+            codes.add(ac["code"])
+            if ac["group"] not in ("route", "external"): probs.append(f"справка {aid}/{ac['code']}: группа {ac['group']}")
+            for part in ("econ", "pol", "risks"):
+                for i, pt in enumerate(ac[part]): check(pt, f"{ac['code']}.{part}#{i}")
+        pts = [pt for s in an["general"] for pt in s["points"]] + [pt for ac in an["actors"] for p in ("econ", "pol", "risks") for pt in ac[p]]
+        print(f"справка {aid}: стран {len(an['actors'])}, пунктов {len(pts)}, из них по одному источнику {sum(p.get('single', True) for p in pts)}, источников {len(ids)}")
+
     for w in warns: print("  !", w)
     for p in probs: print("  ✗", p)
     if probs:
         sys.exit("Ошибки в данных маршрутов — сборка остановлена")
 
-    out = OD(meta=D["meta"], nodes=nodes, routes=D["routes"], through=through, geo=OD(type="FeatureCollection", features=feats))
+    out = OD(meta=D["meta"], nodes=nodes, routes=D["routes"], through=through, analyses=analyses, geo=OD(type="FeatureCollection", features=feats))
     path = os.path.join(a.out, "routes.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))

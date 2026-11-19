@@ -8,7 +8,7 @@ import { createMap } from './map.js';
 import { loadWars, warsLoaded, conflictsAt, involvement, warRoleMap } from './wars.js';
 import { loadRoutes, routesLoaded, routesAt, routesForCountry, routeStatus } from './routes.js';
 import { el, icon, iconHTML, TYPES, actorName, renderLegend, renderTypeFilters, showTooltip, hideTooltip, controllerText,
-  buildOptions, renderList, renderCountryCard, renderDisputeCard, renderConflictCard, renderRefCard, renderRouteCard, conflictTitle } from './ui.js';
+  buildOptions, renderList, renderCountryCard, renderDisputeCard, renderConflictCard, renderRefCard, renderRouteCard, conflictTitle, resetTabs } from './ui.js';
 
 const $ = (s) => document.querySelector(s);
 const NOW = nowMonth();
@@ -18,7 +18,7 @@ const THEMES = ['auto', 'light', 'dark', 'political', 'atlas', 'contrast'];
 const S = {
   T: period(NOW.y, NOW.m), mode: 'disputes',
   actor: null, unitId: null, unitName: null, unitGw: null, unitIso: null, pinned: false,
-  selected: null, conflict: null, land: null, route: null,
+  selected: null, conflict: null, land: null, route: null, routeActor: null,
   filters: { types: new Set(TYPES), status: 'all', lowconf: true },
   disputes: [], actors: {}, meta: null, units: [], eraCache: new Map(), eraKey: null, events: [], warEvents: [],
   playing: null, activeOption: null, diplo: null, diploLoading: null, warsState: 'idle',
@@ -60,7 +60,7 @@ function readHash() {
   const tt = p.get('t');
   if (tt && /^\d{4}-\d{2}$/.test(tt)) ym = { y: +tt.slice(0, 4), m: +tt.slice(5, 7) };
   else if (p.get('y')) ym = { y: +p.get('y'), m: 12 };
-  return { ym, a: p.get('a'), g: p.get('g') ? +p.get('g') : null, d: p.get('d'), c: p.get('c'), r: p.get('r'), mode: p.get('mode'), lang: p.get('lang') };
+  return { ym, a: p.get('a'), g: p.get('g') ? +p.get('g') : null, d: p.get('d'), c: p.get('c'), r: p.get('r'), ra: p.get('ra'), mode: p.get('mode'), lang: p.get('lang') };
 }
 function writeHash() {
   const p = new URLSearchParams();
@@ -71,6 +71,7 @@ function writeHash() {
   if (S.selected) p.set('d', S.selected);
   if (S.conflict) p.set('c', S.conflict);
   if (S.route) p.set('r', S.route);
+  if (S.route && S.routeActor) p.set('ra', S.routeActor);
   p.set('lang', getLang());
   history.replaceState(null, '', `#${p.toString()}`);
   $('#link-methodology').href = `methodology.html#lang=${getLang()}`;
@@ -244,7 +245,10 @@ function renderCard() {
   if (S.route && RD) {
     const r = RD.routes.find((x) => x.id === S.route);
     if (r) {
-      renderRouteCard(card, { r, T: S.T, actors: S.actors, nodes: RD.nodes, through: RD.through[r.id], onClose: closeCard, onActor: (code) => selectActor(code, true) });
+      const analysis = r.analysis ? RD.analyses?.[r.analysis] || null : null;
+      renderRouteCard(card, { r, T: S.T, actors: S.actors, nodes: RD.nodes, through: RD.through[r.id], analysis, nameOf: countryName,
+        actorSel: analysis?.actors.some((a) => a.code === S.routeActor) ? S.routeActor : null,
+        onClose: closeCard, onActor: (code) => selectActor(code, true), onGw: (gw) => selectGw(gw, true), onPickActor: (code) => pickRouteActor(r, analysis, code) });
       show(true); return;
     }
   }
@@ -268,7 +272,27 @@ function renderCard() {
   card.replaceChildren(); show(false);
 }
 
-function clearLand() { S.land = null; M?.setLandSelected(null); S.route = null; M?.setRouteSelected(null); }
+function clearLand() { S.land = null; M?.setLandSelected(null); S.route = null; M?.setRouteSelected(null); setRouteActor(null); }
+
+/** Название страны по коду: справочник сторон, иначе — последняя единица CShapes с этим ISO. */
+function countryName(code) {
+  if (S.actors[code]) return actorName(code, S.actors);
+  for (let i = S.units.length - 1; i >= 0; i--) { const u = S.units[i]; if (u.iso === code) return getLang() === 'en' ? u.name_en : u.name_ru; }
+  return code;
+}
+
+/** Страна, выбранная в справке «Значение» карточки маршрута: подсветка на карте и адрес. */
+function setRouteActor(code, r = null, analysis = null) {
+  S.routeActor = code || null;
+  const a = code ? analysis?.actors.find((x) => x.code === code) : null;
+  M?.setRouteCountry(a?.gw ?? null, r?.color);
+}
+function pickRouteActor(r, analysis, code) {
+  setRouteActor(code, r, analysis);
+  writeHash();
+  const a = analysis?.actors.find((x) => x.code === code);
+  if (a) say(t('announce.route.actor', { name: tx(a.name) }));
+}
 
 function closeCard() {
   S.selected = null; S.conflict = null; S.pinned = false; S.actor = null; S.unitId = null; S.unitName = null; S.unitGw = null; S.unitIso = null;
@@ -317,6 +341,7 @@ function selectUnitProps(p) {
 }
 
 function selectDispute(id, fly = false, focusCard = true) {
+  if (id !== S.selected) resetTabs();
   clearLand();
   S.selected = id; S.conflict = null;
   refresh();
@@ -336,13 +361,16 @@ function selectConflict(id, focusCard = true) {
 }
 
 /** Транспортный маршрут: справка в панели. */
-function selectRoute(id, fly = false, focusCard = true) {
+function selectRoute(id, fly = false, focusCard = true, actor = null) {
   const RD = routesLoaded();
   const r = RD?.routes.find((x) => x.id === id);
   if (!r) return;
+  if (id !== S.route) resetTabs();
   clearLand();
   S.selected = null; S.conflict = null; S.pinned = false; S.actor = null; S.unitId = null; S.unitName = null; S.unitGw = null; S.unitIso = null;
   S.route = id; M?.setRouteSelected(id);
+  const an = r.analysis ? RD.analyses?.[r.analysis] : null;
+  if (actor && an?.actors.some((a) => a.code === actor)) setRouteActor(actor, r, an);
   if (S.prefs.routes === false) { S.prefs.routes = true; savePrefs(); M?.setRoutesVisible(true); $('#chk-routes').checked = true; }
   refresh(); renderLegendNow();
   say(t('announce.route', { name: tx(r.name) }));
@@ -353,7 +381,7 @@ function selectRoute(id, fly = false, focusCard = true) {
 
 /** Территория без единицы CShapes: справка в панели. */
 function selectLand(p) {
-  S.route = null; M?.setRouteSelected(null);
+  S.route = null; M?.setRouteSelected(null); setRouteActor(null);
   S.selected = null; S.conflict = null; S.pinned = false; S.actor = null; S.unitId = null; S.unitName = null; S.unitGw = null; S.unitIso = null;
   S.land = p; M?.setLandSelected(p.k);
   refresh(); renderLegendNow();
@@ -626,7 +654,7 @@ async function main() {
     M?.setRoutesData(rd.geo);
     M?.setRoutesVisible(S.prefs.routes !== false);
     renderLegendNow();
-    if (h.r && rd.routes.some((r) => r.id === h.r)) selectRoute(h.r, true, false); else refresh();
+    if (h.r && rd.routes.some((r) => r.id === h.r)) selectRoute(h.r, true, false, h.ra); else refresh();
   }).catch((e) => {
     // без данных маршрутов переключатель не делает ничего — говорим об этом прямо в меню
     console.error(e);
@@ -758,7 +786,7 @@ async function main() {
     const mode = n.mode === 'wars' ? 'wars' : 'disputes';
     if (mode !== S.mode) setMode(mode);
     if (n.ym && monthIndex(n.ym.y, n.ym.m) !== S.T.idx) await setMonth(monthIndex(n.ym.y, n.ym.m));
-    if (n.r && n.r !== S.route && routesLoaded()) selectRoute(n.r, true, false);
+    if (n.r && routesLoaded() && (n.r !== S.route || (n.ra || null) !== S.routeActor)) selectRoute(n.r, n.r !== S.route, false, n.ra);
     else if (n.d && n.d !== S.selected && S.disputes.some((d) => d.id === n.d)) selectDispute(n.d, true, false);
     else if (n.c && n.c !== S.conflict) selectConflict(n.c, false);
     else if (n.a && n.a !== S.actor) selectActor(n.a);

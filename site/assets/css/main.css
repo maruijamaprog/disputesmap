@@ -261,7 +261,8 @@ legend { font-weight: 600; font-size: 13px; margin-bottom: 6px; color: var(--mut
 
 /* ---------------------------------------------------------------- карточки */
 .card { padding: 0 16px 20px; }
-.card-head { position: sticky; top: 0; z-index: 2; padding: 10px 0 10px; background: linear-gradient(var(--surface-solid) 85%, transparent); }
+/* плотный фон до нижних 10 px: при переносе плашек на вторую строку текст под ними не просвечивает */
+.card-head { position: sticky; top: 0; z-index: 2; padding: 10px 0 10px; background: linear-gradient(var(--surface-solid) calc(100% - 10px), transparent); }
 .card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
 .back-btn { display: inline-flex; align-items: center; gap: 2px; border: 0; background: none; color: var(--accent); padding: 4px 6px 4px 0; cursor: pointer; font-size: 13.5px; }
 .icon-btn { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; border: 0; background: transparent; cursor: pointer; color: var(--text); }
@@ -494,3 +495,25 @@ dialog h2 { margin-top: 0; font-size: 19px; }
 .bar-src { white-space: nowrap; }
 .bar-src .badge { margin-left: 4px; font-size: 10.5px; padding: 0 6px; }
 .history li.later { opacity: .5; }
+
+/* справка «Значение»: пункты с источниками и выбор страны внизу карточки маршрута */
+.pts > li { margin: 0 0 8px; line-height: 1.45; }
+.pts .badge { margin-left: 4px; font-size: 10.5px; padding: 0 6px; vertical-align: 1px; }
+.route-actors { border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
+.route-actors .actor-group { margin: 12px 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.actor-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.actor-chip {
+  font: inherit; font-size: 13.5px; line-height: 1.2; padding: 6px 12px; min-height: 32px; border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); color: inherit; border: 1px solid var(--border);
+}
+.actor-chip:hover { background: var(--surface-3); }
+.actor-chip[aria-pressed="true"] { background: var(--route, var(--accent)); border-color: var(--route, var(--accent)); color: #fff; font-weight: 600; }
+/* затемнение цвета маршрута — контраст белого текста не ниже 4,5:1 */
+.actor-chip[aria-pressed="true"] { background: color-mix(in srgb, var(--route, var(--accent)) 78%, #000); border-color: color-mix(in srgb, var(--route, var(--accent)) 78%, #000); }
+.actor-chip:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.actor-panel { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-s); background: var(--surface-2); border: 1px solid var(--border); }
+.actor-panel[hidden] { display: none; }
+.actor-panel-head { display: flex; align-items: center; gap: 8px; }
+.actor-panel-head h3 { margin: 0; flex: 1; font-size: 17px; text-transform: none; letter-spacing: 0; color: var(--text); scroll-margin-top: 240px; }
+/* при фокусе заголовок справки не прячется под закреплённой шапкой карточки */
+.actor-panel h4 { margin: 12px 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
